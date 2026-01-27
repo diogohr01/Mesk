@@ -1,0 +1,82 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "numeroOPERP": "10101",
+      "dataOP": "2024-01-15",
+      "numeroPedidoCliente": "1356",
+      "cliente": {
+        "codigo": "95556",
+        "nome": "METALURGICA MOR"
+      },
+      "situacao": "Liberada",
+      "itens": [
+        {
+          "id": 1,
+          "codigoItem": "707395",
+          "descricaoItem": "TUBO RETANG ALUM 20X35X1,00X2070 MM",
+          "codigoItemCliente": "TUB-001",
+          "quantidadePecas": 4500,
+          "quantidadeKg": 1250.5,
+          "dataEntrega": "2024-02-20",
+          "acabamento": "Anodizado",
+          "cubagemPrevista": 15.5,
+          "cubagemReal": null,
+          "localEntrega": "Porto Alegre",
+          "observacoes": "Item prioritário"
+        }
+      ],
+      "informacoesComplementares": {
+        "naturezaOperacao": "Venda",
+        "numeroEmbarque": "",
+        "numeroNotaFiscal": "",
+        "transportadora": ""
+      },
+      "ativo": true,
+      "opsMESC": []
+    },
+    {
+      "id": 2,
+      "numeroOPERP": "10102",
+      "dataOP": "2024-01-20",
+      "numeroPedidoCliente": "1357",
+      "cliente": {
+        "codigo": "95556",
+        "nome": "METALURGICA MOR"
+      },
+      "situacao": "Programada",
+      "itens": [
+        {
+          "id": 2,
+          "codigoItem": "90100002",
+          "descricaoItem": "MTR-027 6063 T6F 19,05X1,20X6000 MM SEQUE",
+          "codigoItemCliente": "MTR-027",
+          "quantidadePecas": 400,
+          "quantidadeKg": 436.80,
+          "dataEntrega": "2024-03-02",
+          "acabamento": "Natural",
+          "cubagemPrevista": 12.3,
+          "cubagemReal": null,
+          "localEntrega": "São Paulo",
+          "observacoes": ""
+        }
+      ],
+      "informacoesComplementares": {
+        "naturezaOperacao": "Venda",
+        "numeroEmbarque": "EMB-001",
+        "numeroNotaFiscal": "NF-12345",
+        "transportadora": "Transportadora ABC"
+      },
+      "ativo": true,
+      "opsMESC": [
+        {
+          "id": 1,
+          "numeroOPMESC": "29948",
+          "status": "Em produção",
+          "quantidade": 2000,
+          "data": "2024-01-25"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "codigoEMS": "1",
+      "nome": "METALURGICA MOR",
+      "tipoServico": "DIVERSOS",
+      "nomeContato": "FABIANO",
+      "telefone": "(51) 2106-7500",
+      "celular": "(51) 9247-9245",
+      "email": "fabiano@mor.com.br",
+      "observacoes": "",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "codigoEMS": "2",
+      "nome": "SEQUENCIAL MILIMÉTRICA IND DE EQUIP ORTOPÉDICO",
+      "tipoServico": "DIVERSOS",
+      "nomeContato": "JOÃO SILVA",
+      "telefone": "(11) 3456-7890",
+      "celular": "(11) 98765-4321",
+      "email": "joao@sequencial.com.br",
+      "observacoes": "Cliente preferencial",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "codigoEMS": "3",
+      "nome": "TRANSPORTADORA ABC LTDA",
+      "tipoServico": "TRANSPORTE",
+      "nomeContato": "MARIA SANTOS",
+      "telefone": "(21) 3456-7890",
+      "celular": "(21) 98765-4321",
+      "email": "maria@transportadoraabc.com.br",
+      "observacoes": "Transportadora principal",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "codigoEMS": "4",
+      "nome": "FORNECEDOR MATERIA PRIMA XYZ",
+      "tipoServico": "MATERIA_PRIMA",
+      "nomeContato": "CARLOS OLIVEIRA",
+      "telefone": "(47) 3456-7890",
+      "celular": "(47) 98765-4321",
+      "email": "carlos@fornecedorxyz.com.br",
+      "observacoes": "",
+      "ativo": true
+    }
+  ]
+}
