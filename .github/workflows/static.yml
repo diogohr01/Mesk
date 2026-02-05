@@ -32,15 +32,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Base path = nome do repositório em minúsculas (evita 404 por diferença de maiúsculas)
+      # Base path = nome EXATO do repositório (mesma capitalização que a URL do GitHub Pages)
       # Se você renomear o repo, o próximo deploy já usa o nome novo automaticamente.
       - name: Definir base path (nome do repo)
         id: base
         run: |
           REPO="${{ github.event.repository.name }}"
-          REPO_LOWER=$(echo "$REPO" | tr '[:upper:]' '[:lower:]')
-          echo "path=/${REPO_LOWER}/" >> $GITHUB_OUTPUT
-          echo "Repo: $REPO -> base path: /${REPO_LOWER}/"
+          echo "path=/${REPO}/" >> $GITHUB_OUTPUT
+          echo "Base path: /${REPO}/ (use esta URL: ...github.io/${REPO}/)"
 
       - name: Build
         run: yarn build
@@ -82,6 +81,6 @@ jobs:
           echo "Site publicado em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "URL: ${{ steps.deployment.outputs.page_url }}"
           echo ""
-          echo "Se você renomeou o repositório, use a URL acima (nome em minúsculas)."
+          echo "Use a URL acima com o mesmo nome/capitalização do repositório."
           echo "Aguarde 1-3 min e use Ctrl+Shift+R para ver a versão nova."
           echo "=========================================="
