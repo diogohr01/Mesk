@@ -15,6 +15,12 @@ const { Text, Title } = Typography;
 // Componente para o Perfil do Usuário
 const UserProfile = ({ userName, userRole, appVersion = '1.0.0' }) => {
     const { signOut } = useAuth();
+    const navigate = useNavigate();
+
+    const handleSair = () => {
+        signOut();
+        navigate('/signIn', { replace: true });
+    };
 
     return (
         <div style={{ padding: '16px', width: '280px' }}>
@@ -24,7 +30,7 @@ const UserProfile = ({ userName, userRole, appVersion = '1.0.0' }) => {
                 <Text type="secondary">{userRole}</Text>
                 <Text type="secondary">v{appVersion}</Text>
 
-                <Button type="primary" onClick={() => signOut()} style={{ width: '100%' }}>
+                <Button type="primary" onClick={handleSair} style={{ width: '100%' }}>
                     Sair
                 </Button>
             </Space>

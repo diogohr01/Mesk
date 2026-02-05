@@ -4,6 +4,10 @@ import api, { useExceptionNotification } from '../services/api';
 const AuthContext = createContext({});
 export const project = "@Project";
 
+// Bypass temporário: true = login admin/Tekann.2024 usa token fixo e entra no portal; false = login normal pela API
+const ENABLE_ADMIN_BYPASS = true;
+const ADMIN_BYPASS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJhZG1pbiIsImFkbWluIiwiYWRtaW4iXSwianRpIjoiMDdiMDZjYzIwYzExNGE5M2JiNTgyZGIxYjA5ZjI1YWEiLCJlbWFpbCI6ImFkbWluQHRla2Fubi5jb20uYnIiLCJuYW1laWQiOiI1YTU3NWFiMi02ZmQ2LTQxNmEtYjE1NC05MmI1ZGIzODg0YjgiLCJyb2xlIjoiQWRtaW5pc3RyYWRvciIsIlBlcm1pc3Npb24iOlsiQ2FkYXN0cm86Q2FkYXN0cm86R2VyZW5jaWFyIiwiQ2FkYXN0cm86TW9uaXRvcjpWZXIiLCJBZ2VuZGE6VmVyIiwiTW9uaXRvcjpHZXJlbmNpYXIiLCJDYWRhc3RybzpNb25pdG9yOkdlcmVuY2lhciIsIlBhaW5lbDpHZXJlbmNpYXIiLCJQYWluZWw6VmVyIiwiQ2FkYXN0cm86Q2FkYXN0cm86VmVyIiwiUGVyZm9ybWFuY2U6VmVyIiwiUGVyZmlzOkdlcmVuY2lhciIsIkNlbnRyYWw6R2VyZW5jaWFyIiwiQ2FkYXN0cm86QXBsaWNhdGl2bzpWZXIiLCJNb25pdG9yOlZlciIsIkFnZW5kYW1lbnRvOkNyaWFyQWdlbmRhbWVudG8iLCJDYWRhc3RybzpBZ2VuZGFtZW50bzpWZXIiLCJQZXJmb3JtYW5jZTpHZXJlbmNpYXIiLCJBcGxpY2F0aXZvOkdlcmVuY2lhciIsIkNhZGFzdHJvOkZvcm5lY2Vkb3JlczpWZXIiLCJBZ2VuZGFtZW50bzpNdWRhclN0YXR1cyIsIkNhZGFzdHJvOlBlcmZpczpWZXIiLCJBcGxpY2F0aXZvOlZlciIsIkNhZGFzdHJvOkFwbGljYXRpdm86R2VyZW5jaWFyIiwiQWdlbmRhbWVudG86R2VyZW5jaWFyIiwiQ2FkYXN0cm86UGFpbmVsOlZlciIsIkNhZGFzdHJvOkFnZW5kYW1lbnRvOkdlcmVuY2lhciIsIlBlcmZpczpWZXIiLCJDYWRhc3RybzpQYWluZWw6R2VyZW5jaWFyIiwiTW9uaXRvcjpDcmlhck9jb3JyZW5jaWFzIiwiQWdlbmRhOkdlcmVuY2lhciIsIkNlbnRyYWw6VmVyIiwiQWdlbmRhbWVudG86VmVyIiwiQ2FkYXN0cm86Rm9ybmVjZWRvcmVzOkdlcmVuY2lhciIsIkNhZGFzdHJvOlBlcmZpczpHZXJlbmNpYXIiLCJBZ2VuZGFtZW50bzpSZWFnZW5kYXIiXSwibmJmIjoxNzcwMzAwOTEyLCJleHAiOjE3NzgwNzY5MTIsImlhdCI6MTc3MDMwMDkxMiwiaXNzIjoiQXBpSXNzdWVyIiwiYXVkIjoiQXBpQXVkaWVuY2UifQ.cjzwcU-FXVC6ZlnywPO3qpzs_Zy_QQ40m8YUJMMiT_U';
+
 export const AuthProvider = ({ children }) => {
     const exceptionNotificationAPI = useExceptionNotification();
 
@@ -55,6 +59,24 @@ export const AuthProvider = ({ children }) => {
 
     const signIn = useCallback(async ({ username, password }) => {
         try {
+            if (ENABLE_ADMIN_BYPASS && username === 'admin' && password === 'Tekann.2024') {
+                const responseData = {
+                    accessToken: ADMIN_BYPASS_TOKEN,
+                    user: {
+                        email: 'admin@tekann.com.br',
+                        name: 'admin',
+                        roles: [{ name: 'Administrador' }]
+                    },
+                    roles: [{ name: 'Administrador' }]
+                };
+                const fakeResponse = { data: { response: responseData } };
+                setSignInDataOnLocalStorage(fakeResponse);
+                localStorage.setItem(`${project}:userName`, username);
+                api.defaults.headers.authorization = `Bearer ${responseData.accessToken}`;
+                setUser({ token: responseData.accessToken, user: responseData.user, userRoles: responseData.roles });
+                return fakeResponse;
+            }
+
             const response = await api.post('/signin', { username, password });
             
             // A API retorna data.response ao invés de data.data
@@ -80,6 +102,7 @@ export const AuthProvider = ({ children }) => {
         api.defaults.headers.authorization = '';
         localStorage.removeItem(`${project}:token`);
         localStorage.removeItem(`${project}:user`);
+        localStorage.removeItem(`${project}:userRoles`);
         localStorage.removeItem(`${project}:userName`);
         setUser(null);
     }, []);
