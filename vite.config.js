@@ -22,7 +22,7 @@ function copyIndexTo404() {
 }
 
 // https://vitejs.dev/config/
-// Para GitHub Pages (project site): use base '/nome-do-repo/' (ex: /Mesk/)
+// Base dinâmico: no GitHub Actions usa VITE_BASE_PATH=/${{ repo.name }}/ (ex: /Mesc/)
 export default defineConfig({
   base: process.env.VITE_BASE_PATH || '/',
   plugins: [react(), copyIndexTo404()],

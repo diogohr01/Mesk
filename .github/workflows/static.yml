@@ -31,9 +31,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Base path para GitHub Pages project site (ex: usuario.github.io/Mesk/)
+      # Base path dinâmico = nome do repositório (ex: repo "Mesc" -> usuario.github.io/Mesc/)
       - name: Build
-        run: yarn build
+        run: |
+          echo "BASE_PATH=/${{ github.event.repository.name }}/"
+          yarn build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
