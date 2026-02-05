@@ -31,13 +31,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      # Base path em minúsculas para bater com a URL do GitHub Pages (case-sensitive)
+      # Base path = nome exato do repositório (case-sensitive no GitHub Pages)
       - name: Build
         run: |
-          REPO_LOWER=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')
-          echo "BASE_PATH=/${REPO_LOWER}/"
-          export VITE_BASE_PATH="/${REPO_LOWER}/"
+          echo "BASE_PATH=/${{ github.event.repository.name }}/"
           yarn build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
       - name: List dist (debug)
         run: ls -la dist && ls -la dist/assets 2>/dev/null || true
