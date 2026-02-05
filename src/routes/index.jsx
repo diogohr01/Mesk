@@ -72,17 +72,20 @@ const generateRoutes = (routes) => {
 const RoutesList = () => {
     const dynamicRoutes = generateRoutes(defaultRoutes || []);
 
-    const router = createBrowserRouter([
-        {
-            path: "/signIn",
-            element: <RouteWrapper element={SignIn} />
-        },
-        ...dynamicRoutes, // Adiciona as rotas dinâmicas geradas
-        {
-            path: "*",
-            element: <LayoutWithSuspense><RouteWrapper element={NotFound} /></LayoutWithSuspense>
-        },
-    ]);
+    const router = createBrowserRouter(
+        [
+            {
+                path: "/signIn",
+                element: <RouteWrapper element={SignIn} />
+            },
+            ...dynamicRoutes, // Adiciona as rotas dinâmicas geradas
+            {
+                path: "*",
+                element: <LayoutWithSuspense><RouteWrapper element={NotFound} /></LayoutWithSuspense>
+            },
+        ],
+        { basename: import.meta.env.BASE_URL || '/' }
+    );
 
     return (
         <RouterProvider router={router} />

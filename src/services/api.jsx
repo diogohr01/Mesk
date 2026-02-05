@@ -33,7 +33,8 @@ export const useExceptionNotification = () => {
             localStorage.removeItem(`${project}:user`);
             localStorage.removeItem(`${project}:userName`);
 
-            window.location.href = window.location.origin + '/signIn';
+            const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '/';
+            window.location.href = window.location.origin + base.replace(/\/?$/, '/') + 'signIn';
         } else if (/400/.test(error.message)) {
             let notifications = error.response?.data?.notifications || error.response?.data?.errors;
             if (notifications && notifications.length > 0) {
