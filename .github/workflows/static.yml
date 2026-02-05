@@ -67,3 +67,11 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Deploy concluído
+        run: |
+          echo "=========================================="
+          echo "Site publicado em $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "Aguarde 1-3 min e use Ctrl+Shift+R para ver a versão nova."
+          echo "=========================================="
