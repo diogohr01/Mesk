@@ -44,7 +44,7 @@ jobs:
       - name: Verificar script no index.html
         run: grep -o 'src="[^"]*"' dist/index.html || true
       - name: Verificar 404.html (SPA no GitHub Pages)
-        run: test -f dist/404.html && echo "404.html OK" || (echo "ERRO: 404.html nao encontrado" && exit 1)
+        run: 'test -f dist/404.html && echo "404.html OK" || (echo "ERRO: 404.html nao encontrado" && exit 1)'
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
