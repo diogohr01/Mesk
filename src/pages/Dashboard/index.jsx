@@ -130,7 +130,7 @@ const Dashboard = () => {
         <Col xs={24} lg={12}>
           <LayoutCard
             header={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Title level={5} style={{ margin: 0 }}>Fila Prioritária</Title>
                 <Link to="/ordem-producao/cadastro" style={{ fontSize: 12, color: colors.primary }}>
                   Ver tudo →
@@ -178,7 +178,7 @@ const Dashboard = () => {
         <Col xs={24} lg={12}>
           <LayoutCard
             header={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #f0f0f0', marginBottom: 12}}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <Title level={5} style={{ margin: 0 }}>Status dos Recursos</Title>
                 <Link to="/forno" style={{ fontSize: 12, color: colors.primary }}>
                   Gerenciar →
