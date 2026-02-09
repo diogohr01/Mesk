@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { CheckCircleOutlined, ToolOutlined } from '@ant-design/icons';
 import { Card } from '../../components';
+import RecursosProdutivosService from '../../services/recursosProdutivosService';
 import { colors } from '../../styles/colors';
 
 const { Text } = Typography;
 
-const RECURSOS_MOCK = [
-  { id: '1', nome: 'Prensa 01', tipo: 'Prensa de Extrusão', capacidade: 2200, unidade: 'ton', status: 'operando' },
-  { id: '2', nome: 'Prensa 02', tipo: 'Prensa de Extrusão', capacidade: 1800, unidade: 'ton', status: 'operando' },
-  { id: '3', nome: 'Prensa 03', tipo: 'Prensa de Extrusão', capacidade: 1200, unidade: 'ton', status: 'manutenção' },
-  { id: '4', nome: 'Forno Homog. 01', tipo: 'Forno', capacidade: 30, unidade: 'ton', status: 'operando' },
-  { id: '5', nome: 'Serra 01', tipo: 'Serra de Corte', capacidade: null, unidade: null, status: 'operando' },
-];
-
 const RecursosProdutivos = () => {
+  const [recursos, setRecursos] = useState([]);
+
+  useEffect(() => {
+    RecursosProdutivosService.getAll().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setRecursos(res.data.data);
+      }
+    });
+  }, []);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div>
@@ -38,7 +41,7 @@ const RecursosProdutivos = () => {
       </div>
 
       <Row gutter={[16, 16]}>
-        {RECURSOS_MOCK.map((recurso) => (
+        {recursos.map((recurso) => (
           <Col key={recurso.id} xs={24} sm={12} md={8} lg={6}>
             <RecursoCard recurso={recurso} />
           </Col>
@@ -49,7 +52,7 @@ const RecursosProdutivos = () => {
 };
 
 function RecursoCard({ recurso }) {
-  const isManutencao = recurso.status === 'manutenção';
+  const isManutencao = recurso.status === 'manutencao' || recurso.status === 'manutenção';
   const capacidadeStr =
     recurso.capacidade != null && recurso.unidade
       ? `${recurso.capacidade} ${recurso.unidade}`

@@ -38,6 +38,27 @@ export default createGlobalStyle`
         background: ${colors.primary}75;
     }
 
+    /* Barra de rolagem maior no Gantt de Produção */
+    .gantt-timeline-scroll {
+        scrollbar-width: auto;
+        scrollbar-color: ${colors.primary}cc #e8e8e8;
+    }
+    .gantt-timeline-scroll::-webkit-scrollbar {
+        height: 18px;
+        width: 18px;
+    }
+    .gantt-timeline-scroll::-webkit-scrollbar-track {
+        background: #e8e8e8;
+        border-radius: 10px;
+    }
+    .gantt-timeline-scroll::-webkit-scrollbar-thumb {
+        background: ${colors.primary}cc;
+        border-radius: 10px;
+    }
+    .gantt-timeline-scroll::-webkit-scrollbar-thumb:hover {
+        background: ${colors.primary};
+    }
+
     html, body {
         margin: 0px !important;
         padding: 0;

@@ -1,0 +1,10 @@
+{
+  "data": [
+    { "id": "entrega", "label": "Data de Entrega", "value": 25 },
+    { "id": "setup", "label": "Setup de Máquina", "value": 20 },
+    { "id": "liga", "label": "Liga do Material", "value": 15 },
+    { "id": "tempera", "label": "Têmpera", "value": 15 },
+    { "id": "produto", "label": "Código do Produto", "value": 10 },
+    { "id": "produtividade", "label": "Produtividade", "value": 15 }
+  ]
+}

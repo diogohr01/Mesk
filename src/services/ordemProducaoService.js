@@ -1,6 +1,8 @@
 import Api from './api';
 import ordensProducaoMock from '../mocks/ordemProducao/ordensProducao.json';
 import historicoAlteracoesMock from '../mocks/ordemProducao/historicoAlteracoes.json';
+import recursosMock from '../mocks/recursosProdutivos/recursos.json';
+import manutencoesMock from '../mocks/recursosProdutivos/manutencoes.json';
 
 // Função auxiliar para simular delay da API
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -312,7 +314,100 @@ const OrdemProducaoService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    // Dados para o Dashboard (resumo de OPs)
+    getDadosDashboard: async () => {
+        await delay(200);
+        const list = ordensProducaoMock.data || [];
+        const pais = list.filter((op) => op.tipoOp === 'PAI');
+        const filhas = list.filter((op) => op.tipoOp === 'FILHA');
+        const opsResumo = [];
+        filhas.forEach((f) => {
+            const pai = pais.find((p) => p.id === f.opPaiId);
+            const dataEntrega = (f.itens && f.itens[0] && f.itens[0].dataEntrega) || '';
+            const produto = (pai && pai.produto) || (f.itens && f.itens[0] && f.itens[0].descricaoItem) || '';
+            opsResumo.push({
+                id: f.id,
+                codigo: f.numeroOPERP || `${pai ? pai.numeroOPERP : ''}-${f.id}`,
+                status: f.status || 'rascunho',
+                dataEntrega,
+                score: f.score != null ? f.score : 0,
+                produto,
+                cliente: (f.cliente && f.cliente.nome) || '',
+            });
+        });
+        pais.forEach((p) => {
+            const hasFilhas = filhas.some((f) => f.opPaiId === p.id);
+            if (!hasFilhas) {
+                const dataEntrega = (p.itens && p.itens[0] && p.itens[0].dataEntrega) || '';
+                opsResumo.push({
+                    id: p.id,
+                    codigo: p.numeroOPERP || '',
+                    status: (p.situacao === 'Em cadastro' ? 'rascunho' : 'sequenciada') || 'rascunho',
+                    dataEntrega,
+                    score: 0,
+                    produto: p.produto || (p.itens && p.itens[0] && p.itens[0].descricaoItem) || '',
+                    cliente: (p.cliente && p.cliente.nome) || '',
+                });
+            }
+        });
+        return {
+            data: { opsResumo },
+            success: true,
+            message: 'Success',
+        };
+    },
+
+    // Dados para o Gantt (OPs agrupadas pai/filhas + recursos + manutenções)
+    getDadosGantt: async () => {
+        await delay(200);
+        const list = ordensProducaoMock.data || [];
+        const pais = list.filter((op) => op.tipoOp === 'PAI');
+        const filhas = list.filter((op) => op.tipoOp === 'FILHA');
+        const opsGantt = pais.map((pai) => {
+            const filhasDoPai = filhas
+                .filter((f) => f.opPaiId === pai.id)
+                .map((f, idx) => {
+                    const dataEntrega = (f.itens && f.itens[0] && f.itens[0].dataEntrega) || '';
+                    return {
+                        id: String(f.id),
+                        codigo: f.numeroOPERP || `${pai.numeroOPERP}-${String(idx + 1).padStart(2, '0')}`,
+                        dataInicio: f.dataInicio || f.dataOP,
+                        dataFim: f.dataFim || f.dataOP,
+                        dataEntrega,
+                        recurso: f.recurso || '',
+                        status: f.status || 'rascunho',
+                        quantidade: (f.itens && f.itens[0] && f.itens[0].quantidadePecas) || 0,
+                        score: f.score != null ? f.score : 0,
+                        setupMinutos: f.setupMinutos != null ? f.setupMinutos : 0,
+                        setupTipo: f.setupTipo || '',
+                    };
+                });
+            return {
+                id: String(pai.id),
+                codigo: pai.numeroOPERP || '',
+                produto: pai.produto || (pai.itens && pai.itens[0] && pai.itens[0].descricaoItem) || '',
+                cliente: (pai.cliente && pai.cliente.nome) || '',
+                liga: pai.liga || '',
+                tempera: pai.tempera || '',
+                filhas: filhasDoPai,
+            };
+        }).filter((p) => p.filhas.length > 0);
+        const recursos = (recursosMock.data || []).map((r) => ({
+            id: r.id,
+            nome: r.nome,
+            tipo: r.tipo,
+            capacidade: r.capacidade != null && r.unidade ? `${r.capacidade} ${r.unidade}` : '—',
+            status: r.status,
+        }));
+        const manutencoes = manutencoesMock.data || [];
+        return {
+            data: { opsGantt, recursos, manutencoes },
+            success: true,
+            message: 'Success',
+        };
+    },
 };
 
 export default OrdemProducaoService;

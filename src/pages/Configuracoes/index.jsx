@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Row, Slider, Space, Typography } from 'antd';
 import { Card } from '../../components';
 import {
@@ -9,22 +9,22 @@ import {
 } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { toast } from '../../helpers/toast';
+import ConfiguracoesService from '../../services/configuracoesService';
 import { colors } from '../../styles/colors';
 
 const { Text } = Typography;
 
-const CRITERIOS_INICIAIS = [
-  { id: 'entrega', label: 'Data de Entrega', value: 25 },
-  { id: 'setup', label: 'Setup de Máquina', value: 20 },
-  { id: 'liga', label: 'Liga do Material', value: 15 },
-  { id: 'tempera', label: 'Têmpera', value: 15 },
-  { id: 'produto', label: 'Código do Produto', value: 10 },
-  { id: 'produtividade', label: 'Produtividade', value: 15 },
-];
-
 const Configuracoes = () => {
-  const [criterios, setCriterios] = useState(CRITERIOS_INICIAIS);
+  const [criterios, setCriterios] = useState([]);
   const total = criterios.reduce((s, c) => s + c.value, 0);
+
+  useEffect(() => {
+    ConfiguracoesService.getCriteriosScore().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setCriterios(res.data.data);
+      }
+    });
+  }, []);
 
   const handleValueChange = useCallback((id, newValue) => {
     setCriterios((prev) =>
@@ -33,8 +33,12 @@ const Configuracoes = () => {
   }, []);
 
   const handleReset = useCallback(() => {
-    setCriterios(CRITERIOS_INICIAIS);
-    toast.success('Pesos resetados', 'Valores restaurados ao padrão.');
+    ConfiguracoesService.getCriteriosScore().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setCriterios(res.data.data);
+        toast.success('Pesos resetados', 'Valores restaurados ao padrão.');
+      }
+    });
   }, []);
 
   const handleNormalize = useCallback(() => {

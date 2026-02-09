@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Card,
   Col,
   Progress,
   Row,
@@ -15,48 +14,59 @@ import {
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Card as LayoutCard, KpiCard, ScoreBadge, StatusBadge } from '../../components';
-import { mockOPs } from '../../mocks/dashboard/mockData';
+import OrdemProducaoService from '../../services/ordemProducaoService';
+import RecursosProdutivosService from '../../services/recursosProdutivosService';
+import { statusLabels } from '../../constants/ordemProducaoStatus';
 import { colors } from '../../styles/colors';
 
 const { Title, Text } = Typography;
 
-const RECURSOS_MOCK = [
-  { nome: 'Prensa 01', carga: 85, status: 'operando' },
-  { nome: 'Prensa 02', carga: 62, status: 'operando' },
-  { nome: 'Prensa 03', carga: 0, status: 'manutenção' },
-  { nome: 'Forno Homog.', carga: 45, status: 'operando' },
-];
-
-const RESUMO_STATUS = [
-  { key: 'rascunho', label: 'Rascunho', color: '#8c8c8c' },
-  { key: 'sequenciada', label: 'Sequenciada', color: '#1890ff' },
-  { key: 'confirmada', label: 'Confirmada', color: '#385E9D' },
-  { key: 'em_producao', label: 'Em Produção', color: '#d46b08' },
-];
+const RESUMO_STATUS_KEYS = ['rascunho', 'sequenciada', 'confirmada', 'em_producao'];
+const RESUMO_STATUS = RESUMO_STATUS_KEYS.map((key) => ({
+  key,
+  label: statusLabels[key] || key,
+  color: key === 'rascunho' ? '#8c8c8c' : key === 'sequenciada' ? '#1890ff' : key === 'confirmada' ? '#385E9D' : '#d46b08',
+}));
 
 const Dashboard = () => {
-  const totalOPs = mockOPs.length;
-  const emProducao = mockOPs.filter((op) => op.status === 'em_producao').length;
+  const [opsResumo, setOpsResumo] = useState([]);
+  const [recursos, setRecursos] = useState([]);
+
+  useEffect(() => {
+    OrdemProducaoService.getDadosDashboard().then((res) => {
+      if (res.success && res.data && res.data.opsResumo) {
+        setOpsResumo(res.data.opsResumo);
+      }
+    });
+    RecursosProdutivosService.getAll().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setRecursos(res.data.data.map((r) => ({ nome: r.nome, carga: r.status === 'manutencao' ? 0 : 70, status: r.status })));
+      }
+    });
+  }, []);
+
+  const totalOPs = opsResumo.length;
+  const emProducao = opsResumo.filter((op) => op.status === 'em_producao').length;
   const hoje = new Date();
-  const atrasadas = mockOPs.filter(
+  const atrasadas = opsResumo.filter(
     (op) =>
-      new Date(op.dataEntrega) < hoje &&
+      op.dataEntrega && new Date(op.dataEntrega) < hoje &&
       op.status !== 'concluida' &&
       op.status !== 'cancelada'
   ).length;
-  const concluidas = mockOPs.filter((op) => op.status === 'concluida').length;
+  const concluidas = opsResumo.filter((op) => op.status === 'concluida').length;
   const scoreMedia =
     totalOPs > 0
-      ? Math.round(mockOPs.reduce((acc, op) => acc + op.score, 0) / totalOPs)
+      ? Math.round(opsResumo.reduce((acc, op) => acc + (op.score || 0), 0) / totalOPs)
       : 0;
 
   const opsUrgentes = useMemo(
     () =>
-      mockOPs
+      opsResumo
         .filter((op) => op.status !== 'concluida' && op.status !== 'cancelada')
-        .sort((a, b) => b.score - a.score)
+        .sort((a, b) => (b.score || 0) - (a.score || 0))
         .slice(0, 5),
-    []
+    [opsResumo]
   );
 
   return (
@@ -178,7 +188,7 @@ const Dashboard = () => {
             style={{ height: '100%' }}
           >
             <div style={{ marginBottom: 24 }}>
-              {RECURSOS_MOCK.map((r) => (
+              {recursos.map((r) => (
                 <div key={r.nome} style={{ marginBottom: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                     <Text style={{ fontSize: 14 }}>{r.nome}</Text>
@@ -225,7 +235,7 @@ const Dashboard = () => {
               </Text>
               <Row gutter={[16, 8]}>
                 {RESUMO_STATUS.map((s) => {
-                  const count = mockOPs.filter((o) => o.status === s.key).length;
+                  const count = opsResumo.filter((o) => o.status === s.key).length;
                   return (
                     <Col span={12} key={s.key}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

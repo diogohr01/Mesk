@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Tag } from 'antd';
-import { statusLabels, statusColors } from '../../mocks/dashboard/mockData';
+import { statusLabels, statusColors } from '../../constants/ordemProducaoStatus';
 
 /**
  * Badge de status da OP com label e cor consistentes.

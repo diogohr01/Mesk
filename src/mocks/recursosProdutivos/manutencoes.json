@@ -1,0 +1,6 @@
+{
+  "data": [
+    { "id": "m1", "recursoId": "rec-3", "dataInicio": "2025-02-10", "dataFim": "2025-02-12", "tipo": "manutencao", "descricao": "Manutenção preventiva" },
+    { "id": "m2", "recursoId": "rec-1", "dataInicio": "2025-02-14", "dataFim": "2025-02-14", "tipo": "parada", "descricao": "Parada programada" }
+  ]
+}

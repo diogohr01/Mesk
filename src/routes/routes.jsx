@@ -11,7 +11,8 @@ import {
     AiOutlineUser,
     AiOutlineSearch,
     AiOutlineSetting,
-    AiOutlineTool
+    AiOutlineTool,
+    AiOutlineSchedule
 } from 'react-icons/ai';
 import { roles } from '../helpers/roles';
 
@@ -38,6 +39,7 @@ const Charts = preloadComponent(() => import('../pages/Home/charts'));
 // Rotas de Ordem de Produção
 const OrdemProducaoCadastro = preloadComponent(() => import('../pages/OrdemProducao/cadastro'));
 const OrdemProducaoConsulta = preloadComponent(() => import('../pages/OrdemProducao/consulta'));
+const GanttProducao = preloadComponent(() => import('../pages/OrdemProducao/gantt'));
 
 // Rotas de Pedidos
 const PedidosCadastro = preloadComponent(() => import('../pages/Pedidos/cadastro'));
@@ -92,6 +94,7 @@ export const defaultRoutes = [
         children: [
             { key: '/dashboard', icon: <AiFillHome />, label: 'Dashboard', element: Dashboard, roles: [roles.roleAdmin] },
             { key: '/ordem-producao/cadastro', icon: <AiOutlineFileText />, label: 'Ordem de Produção', element: OrdemProducaoCadastro, roles: [roles.roleAdmin] },
+            { key: '/ordem-producao/gantt', icon: <AiOutlineSchedule />, label: 'Gantt de Produção', element: GanttProducao, roles: [roles.roleAdmin] },
             { key: '/pedidos/cadastro', icon: <AiOutlineFileText />, label: 'Pedidos', element: PedidosCadastro, roles: [roles.roleAdmin] },
             { key: '/perfis/cadastro', icon: <AiOutlineFileText />, label: 'Perfis', element: PerfisCadastro, roles: [roles.roleAdmin] },
             { key: '/ferramentas/cadastro', icon: <AiOutlineFileText />, label: 'Ferramentas', element: FerramentasCadastro, roles: [roles.roleAdmin] },
