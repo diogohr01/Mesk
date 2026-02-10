@@ -25,6 +25,13 @@ const getMockData = async (endpoint, data) => {
         if (filtros.tipoServico) {
             filteredData = filteredData.filter(item => item.tipoServico === filtros.tipoServico);
         }
+        if (filtros.search && String(filtros.search).trim()) {
+            const term = String(filtros.search).trim().toLowerCase();
+            filteredData = filteredData.filter(item =>
+                item.nome?.toLowerCase().includes(term) ||
+                item.codigoEMS?.toString().toLowerCase().includes(term)
+            );
+        }
         
         const start = (page - 1) * pageSize;
         const end = start + pageSize;

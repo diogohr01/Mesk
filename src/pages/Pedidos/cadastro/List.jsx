@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiFillDelete, AiFillEdit, AiOutlineClear, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { Card, DynamicForm, LoadingSpinner, PaginatedTable, ActionButtons } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import PedidosService from '../../../services/pedidosService';
 
 const { Content } = Layout;
@@ -12,6 +13,16 @@ const List = ({ onEdit, onView }) => {
   const [loading, setLoading] = useState(false);
   const [filterForm] = Form.useForm();
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
+
+  const debouncedReloadTable = useMemo(
+    () => debounce(() => { if (tableRef.current) tableRef.current.reloadTable(); }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
 
   const filterFormConfig = useMemo(() => [
     {
@@ -25,16 +36,6 @@ const List = ({ onEdit, onView }) => {
       ],
     },
   ], []);
-
-  // Função debounced para aplicar filtros
-  const debouncedReloadTable = useMemo(
-    () => debounce(() => {
-      if (tableRef.current) {
-        tableRef.current.reloadTable();
-      }
-    }, 300),
-    []
-  );
 
   // Atualiza o fetchData para incluir os filtros
   const fetchData = useCallback(
@@ -62,6 +63,7 @@ const List = ({ onEdit, onView }) => {
           situacao: filters.situacao,
           dataInicio,
           dataFim,
+          search: searchTerm?.trim() || undefined,
         };
 
         const response = await PedidosService.getAll(requestData);
@@ -78,7 +80,7 @@ const List = ({ onEdit, onView }) => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
 
   const handleEdit = useCallback((record) => {
@@ -249,6 +251,7 @@ const List = ({ onEdit, onView }) => {
                       icon={<AiOutlineClear />}
                       onClick={() => {
                         filterForm.resetFields();
+                        clearSearch();
                         debouncedReloadTable();
                       }}
                       size="middle"

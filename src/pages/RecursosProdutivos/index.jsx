@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Row, Typography } from 'antd';
 import { CheckCircleOutlined, ToolOutlined } from '@ant-design/icons';
 import { Card } from '../../components';
+import { useFilterSearchContext } from '../../contexts/FilterSearchContext';
 import RecursosProdutivosService from '../../services/recursosProdutivosService';
 import { colors } from '../../styles/colors';
 
@@ -9,6 +10,7 @@ const { Text } = Typography;
 
 const RecursosProdutivos = () => {
   const [recursos, setRecursos] = useState([]);
+  const { searchTerm } = useFilterSearchContext();
 
   useEffect(() => {
     RecursosProdutivosService.getAll().then((res) => {
@@ -17,6 +19,16 @@ const RecursosProdutivos = () => {
       }
     });
   }, []);
+
+  const filteredRecursos = useMemo(() => {
+    const term = (searchTerm || '').trim().toLowerCase();
+    if (!term) return recursos;
+    return recursos.filter(
+      (r) =>
+        (r.nome && r.nome.toLowerCase().includes(term)) ||
+        (r.tipo && r.tipo.toLowerCase().includes(term))
+    );
+  }, [recursos, searchTerm]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -41,7 +53,7 @@ const RecursosProdutivos = () => {
       </div>
 
       <Row gutter={[16, 16]}>
-        {recursos.map((recurso) => (
+        {filteredRecursos.map((recurso) => (
           <Col key={recurso.id} xs={24} sm={12} md={8} lg={6}>
             <RecursoCard recurso={recurso} />
           </Col>

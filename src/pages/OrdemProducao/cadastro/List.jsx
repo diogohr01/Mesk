@@ -1,10 +1,11 @@
-import { Badge, Button, Col, Form, Input, Layout, message, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
-import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Badge, Button, Col, Form, Layout, message, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { debounce } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlineSearch } from 'react-icons/ai';
 import { Card, DynamicForm, LoadingSpinner, PaginatedTable, ActionButtons, periodToDataRange } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import { toast } from '../../../helpers/toast';
 import OrdemProducaoService from '../../../services/ordemProducaoService';
 import { colors } from '../../../styles/colors';
@@ -28,7 +29,7 @@ const List = ({ onAdd, onEdit, onView }) => {
   const [filhasMap, setFilhasMap] = useState({});
   const [loadingFilhas, setLoadingFilhas] = useState({});
   const loadedFilhasRef = useRef({});
-  const [searchTerm, setSearchTerm] = useState('');
+  const { searchTerm, clearSearch } = useFilterSearchContext();
   const [statusFilter, setStatusFilter] = useState('todos');
   const [activeTab, setActiveTab] = useState('pai');
 
@@ -50,12 +51,11 @@ const List = ({ onAdd, onEdit, onView }) => {
     },
   ], []);
 
-  // Função debounced para aplicar filtros
+  // Função debounced para aplicar filtros (inclui pesquisa e ambas as tabelas)
   const debouncedReloadTable = useMemo(
     () => debounce(() => {
-      if (tableRef.current) {
-        tableRef.current.reloadTable();
-      }
+      if (tableRef.current) tableRef.current.reloadTable();
+      if (tableFilhasRef.current) tableFilhasRef.current.reloadTable();
     }, 300),
     []
   );
@@ -244,18 +244,9 @@ const List = ({ onAdd, onEdit, onView }) => {
     if (tableFilhasRef.current) tableFilhasRef.current.reloadTable();
   }, [debouncedReloadTable]);
 
-  const debouncedSearch = useMemo(
-    () => debounce(() => {
-      if (tableRef.current) tableRef.current.reloadTable();
-      if (tableFilhasRef.current) tableFilhasRef.current.reloadTable();
-    }, 300),
-    []
-  );
-
-  const handleSearchChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-    debouncedSearch();
-  }, [debouncedSearch]);
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
 
   const handleStatusClick = useCallback((key) => {
     setStatusFilter(key);
@@ -542,7 +533,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                   onClose={null}
                   onSubmit={handleFilter}
                   secondaryButton={
-                    <Button icon={<AiOutlineClear />} onClick={() => { filterForm.resetFields(); debouncedReloadTable(); if (tableFilhasRef.current) tableFilhasRef.current.reloadTable(); }} size="middle">Limpar</Button>
+                    <Button icon={<AiOutlineClear />} onClick={() => { filterForm.resetFields(); clearSearch(); debouncedReloadTable(); }} size="middle">Limpar</Button>
                   }
                 />
               </div>

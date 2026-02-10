@@ -158,10 +158,24 @@ export default createGlobalStyle`
         outline: none !important;
     }
 
-    /* Menu do Sider: menos espaço à esquerda */
+    /* Menu do Sider: menos espaço à esquerda e cores alinhadas ao layout */
     .app-sidebar-menu.ant-menu-inline .ant-menu-item,
     .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title {
         padding-left: 12px !important;
+        color: ${colors.text.primary} !important;
+    }
+    .app-sidebar-menu.ant-menu-inline .ant-menu-item .anticon,
+    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title .anticon {
+        color: ${colors.text.secondary} !important;
+    }
+    .app-sidebar-menu.ant-menu-inline .ant-menu-item:hover,
+    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title:hover {
+        color: ${colors.primary} !important;
+        background: ${colors.primary}08 !important;
+    }
+    .app-sidebar-menu.ant-menu-inline .ant-menu-item:hover .anticon,
+    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title:hover .anticon {
+        color: ${colors.primary} !important;
     }
     .app-sidebar-menu.ant-menu-inline .ant-menu-sub .ant-menu-item {
         padding-left: 24px !important;
@@ -169,12 +183,9 @@ export default createGlobalStyle`
 
     /* Item selecionado do menu do Sider: marcação da rota */
     .app-sidebar-menu .ant-menu-item-selected {
-        background: ${colors.primary}15 !important;
+        background: ${colors.primary}12 !important;
         color: ${colors.primary} !important;
         border-left: 3px solid ${colors.primary};
-        //border-top: 1px solid ${colors.primary};
-       // border-bottom: 1px solid ${colors.primary};
-        //border-right: 1px solid ${colors.primary};
         border-radius: 6px;
     }
     .app-sidebar-menu .ant-menu-item-selected .anticon {
@@ -197,5 +208,21 @@ export default createGlobalStyle`
 
     .op-atrasada {
         border-left: 2px solid #ff4d4f !important;
+    }
+
+    /* Header search input: primaryLight e bordas/hover em layout */
+    .header-search-input.ant-input-affix-wrapper {
+        background: ${colors.primaryLight} !important;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .header-search-input.ant-input-affix-wrapper:hover,
+    .header-search-input.ant-input-affix-wrapper:focus,
+    .header-search-input.ant-input-affix-wrapper-focused {
+        border-color: ${colors.layout.headerSearchHoverBorder} !important;
+        background: ${colors.layout.headerSearchHoverBg} !important;
+        box-shadow: 0 0 0 2px ${colors.layout.headerSearchFocusRing} !important;
+    }
+    .header-search-input input::placeholder {
+        color: ${colors.layout.siderTextMuted} !important;
     }
 `;

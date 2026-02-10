@@ -3,14 +3,30 @@
  * Ajustar primary/secondary conforme identidade MOR quando definida.
  */
 export const colors = {
-  primary: "#385E9D",
+  primary: "#243b5e",
+  primaryLight: "rgba(255,255,255,0.14)", // mesmo tom que primary, mais claro (hue ~217°)
+  primaryDark: "#1a2d47",
   secondary: "#52c41a",
   accent: "#722ed1",
   background: "#fafafa",
   backgroundGray: "#f0f0f0",
+  borderColor: "#e0e0e0",
   white: "#FFFFFF",
   black: "#000",
-  
+
+  // Layout (Sider + Header) – paleta refinada (navy + header harmonizado)
+  layout: {
+    siderBg: "#243b5e",
+    siderBorder: "#FFFFFF",
+    siderText: "rgba(255,255,255,0.92)",
+    siderTextMuted: "rgba(255,255,255,0.55)",
+    headerBg: "#243b5e",
+    headerBorder: "rgba(0,0,0,0.12)",
+    headerText: "#ffffff",
+    // Header search input (campo de pesquisa no header)
+   
+  },
+
   // Cores de texto
   text: {
     primary: "#262626",

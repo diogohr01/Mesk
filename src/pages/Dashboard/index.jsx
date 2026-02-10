@@ -180,7 +180,7 @@ const Dashboard = () => {
             header={
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <Title level={5} style={{ margin: 0 }}>Status dos Recursos</Title>
-                <Link to="/forno" style={{ fontSize: 12, color: colors.primary }}>
+                <Link to="/recursos-produtivos" style={{ fontSize: 12, color: colors.primary }}>
                   Gerenciar →
                 </Link>
               </div>

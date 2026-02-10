@@ -79,7 +79,6 @@ const PeriodFilter = memo(({ value = defaultValue, onChange }) => {
         <Button
           key={tipo}
           type={activeTipo === tipo ? 'primary' : 'default'}
-          size="small"
           onClick={() => handlePeriodClick(tipo)}
           style={activeTipo === tipo ? { backgroundColor: colors.primary, borderColor: colors.primary } : {}}
         >
@@ -94,7 +93,7 @@ const PeriodFilter = memo(({ value = defaultValue, onChange }) => {
       >
         <Button
           type={activeTipo === 'personalizado' ? 'primary' : 'default'}
-          size="small"
+          size="middle"
           icon={<DownOutlined />}
           onClick={() => setPopoverOpen(true)}
           style={activeTipo === 'personalizado' ? { backgroundColor: colors.primary, borderColor: colors.primary } : {}}

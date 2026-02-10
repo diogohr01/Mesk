@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { Card, LoadingSpinner, PaginatedTable, ActionButtons } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import ItensService from '../../../services/itensService';
 
 const { Content } = Layout;
@@ -11,6 +12,7 @@ const List = ({ onAdd, onEdit, onView }) => {
   const [loading, setLoading] = useState(false);
   const [filterForm] = Form.useForm();
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
 
   const debouncedReloadTable = useMemo(
     () =>
@@ -33,6 +35,7 @@ const List = ({ onAdd, onEdit, onView }) => {
           sorterField,
           sortOrder,
           ...filters,
+          search: searchTerm?.trim() || undefined,
         };
         const response = await ItensService.getAll(requestData);
         return {
@@ -47,8 +50,12 @@ const List = ({ onAdd, onEdit, onView }) => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
+
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
 
   const handleView = useCallback((record) => onView(record), [onView]);
   const handleEdit = useCallback((record) => onEdit(record), [onEdit]);
@@ -179,6 +186,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                             icon={<AiOutlineClear />}
                             onClick={() => {
                               filterForm.resetFields();
+                              clearSearch();
                               debouncedReloadTable();
                             }}
                             style={{ minWidth: '80px', flex: 1 }}

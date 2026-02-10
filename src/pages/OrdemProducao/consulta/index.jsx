@@ -3,8 +3,10 @@ import { Card, DynamicForm, LoadingSpinner, PaginatedTable } from '../../../comp
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineBranches, AiOutlineClear, AiOutlineEdit, AiOutlineSearch, AiOutlineUp } from 'react-icons/ai';
 import dayjs from 'dayjs';
+import { debounce } from 'lodash';
 import OrdemProducaoService from '../../../services/ordemProducaoService';
 import OPDetalhesModal from '../components/OPDetalhesModal';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -15,6 +17,16 @@ const OrdemProducaoConsulta = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrdemId, setSelectedOrdemId] = useState(null);
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
+
+  const debouncedReloadTable = useMemo(
+    () => debounce(() => { if (tableRef.current) tableRef.current.reloadTable(); }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
 
   const [filterFormConfig] = useState([
     {
@@ -144,6 +156,7 @@ const OrdemProducaoConsulta = () => {
           sorterField,
           sortOrder,
           ...filters,
+          search: searchTerm?.trim() || undefined,
         };
 
         const response = await OrdemProducaoService.getAll(requestData);
@@ -160,7 +173,7 @@ const OrdemProducaoConsulta = () => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
 
   const handleFilter = useCallback(() => {
@@ -171,10 +184,11 @@ const OrdemProducaoConsulta = () => {
 
   const handleClearFilters = useCallback(() => {
     filterForm.resetFields();
+    clearSearch();
     if (tableRef.current) {
       tableRef.current.reloadTable();
     }
-  }, [filterForm]);
+  }, [filterForm, clearSearch]);
 
   const handleViewDetails = useCallback((record) => {
     setSelectedOrdemId(record.id);

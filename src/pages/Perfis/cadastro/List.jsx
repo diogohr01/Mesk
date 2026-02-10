@@ -1,8 +1,9 @@
 import { Button, Col, Form, Input, Layout, message, Modal, Row, Space } from 'antd';
 import { debounce } from 'lodash';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { Card, LoadingSpinner, PaginatedTable, ActionButtons } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import PerfisService from '../../../services/perfisService';
 
 const { confirm } = Modal;
@@ -12,6 +13,7 @@ const List = ({ onAdd, onEdit, onView }) => {
   const [loading, setLoading] = useState(false);
   const [filterForm] = Form.useForm();
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
 
   const debouncedReloadTable = useMemo(
     () =>
@@ -21,12 +23,16 @@ const List = ({ onAdd, onEdit, onView }) => {
     []
   );
 
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
+
   const fetchData = useCallback(
     async (page, pageSize, sorterField, sortOrder) => {
       setLoading(true);
       try {
         const filters = filterForm.getFieldsValue();
-        const requestData = { page, pageSize, sorterField, sortOrder, ...filters };
+        const requestData = { page, pageSize, sorterField, sortOrder, ...filters, search: searchTerm?.trim() || undefined };
         const response = await PerfisService.getAll(requestData);
         return {
           data: response.data?.data || [],
@@ -40,7 +46,7 @@ const List = ({ onAdd, onEdit, onView }) => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
 
   const handleDelete = useCallback((record) => {
@@ -149,6 +155,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                             icon={<AiOutlineClear />}
                             onClick={() => {
                               filterForm.resetFields();
+                              clearSearch();
                               debouncedReloadTable();
                             }}
                           >

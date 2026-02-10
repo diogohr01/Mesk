@@ -1,10 +1,11 @@
 import { AppstoreOutlined, DownOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Divider, Dropdown, Layout, Menu, Popover, Row, Space, Typography } from 'antd';
-import { Card } from '../../../components';
+import { Card, HeaderSearchInput } from '../../../components';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
 import { Modal } from '../../../components';
+import { FilterSearchProvider, useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import { useAuth } from '../../../hooks/auth';
 import { defaultRoutes } from '../../../routes/routes';
 import { colors } from '../../../styles/colors';
@@ -57,8 +58,9 @@ const generateMenuItems = (routes) => {
     });
 };
 
-// Componente Principal Autorizado
-const Authorized = ({ children, userName }) => {
+// Layout interno que consome o context (deve estar dentro de FilterSearchProvider)
+const AuthorizedLayout = ({ children, userName }) => {
+    const { searchProps } = useFilterSearchContext();
     const navigate = useNavigate();
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState([]);
@@ -141,20 +143,20 @@ const Authorized = ({ children, userName }) => {
                     onCollapse={(value) => setCollapsed(value)}
                     width={230}
                     style={{
-                        backgroundColor: '#fff',
+                        backgroundColor: colors.layout.siderBg,
                         position: 'sticky',
                         top: 0,
                         height: '100%',
                         minHeight: '100vh',
                         willChange: 'width',
                         transform: 'translateZ(0)',
-                        borderRight: `0.5px solid ${colors.background}`,
+                        borderRight: `1px solid ${colors.layout.siderBorder}`,
                         transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
                 >
                     <div
                         style={{
-                            background: colors.white,
+                            background: colors.layout.siderBg,
                             height: 64,
                             padding: '0 16px',
                             boxSizing: 'border-box',
@@ -169,44 +171,45 @@ const Authorized = ({ children, userName }) => {
                                 width: 40,
                                 height: 40,
                                 borderRadius: 8,
-                                background:colors.primary,
+                                background: 'rgba(255,255,255,0.14)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 flexShrink: 0,
                             }}
                         >
-                            <AppstoreOutlined style={{ fontSize: 22, color: colors.white }} />
+                            <AppstoreOutlined style={{ fontSize: 22, color: colors.layout.siderText }} />
                         </div>
                         {!collapsed && (
                             <div style={{ minWidth: 0 }}>
-                                <div style={{ color: colors.primary, fontSize: 18, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
-                                <div style={{ color:colors.primary, fontSize: 12, lineHeight: 1.3 }}>Sequenciamento</div>
+                                <div style={{ color: colors.layout.siderText, fontSize: 18, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
+                                <div style={{ color: colors.layout.siderTextMuted, fontSize: 12, lineHeight: 1.3 }}>Sequenciamento</div>
                             </div>
                         )}
                     </div>
-                    <Divider      />
+                    <Divider style={{ margin: 0 }} />
                     {sidebarMenu}
                 </Sider>
 
                 <Layout style={{ flex: 1, minWidth: 0 }}>
                     <Header
                         style={{
-                            backgroundColor: colors.primary,
+                            backgroundColor: colors.layout.headerBg,
                             padding: '0 16px',
-                            borderBottom: `0.5px solid ${colors.primary}66`,
-                            height:60,
+                            borderBottom: `1px solid ${colors.layout.headerBorder}`,
+                            height: 65,
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-end',
+                            justifyContent: 'space-between',
                         }}
                     >
-                        <Space size="middle" align="center">
+                            <HeaderSearchInput placeholder="Pesquisar" {...searchProps} />
+                        <Space size="middle" align="center" style={{borderLeft: `0.5px solid ${colors.white}`}}>
                             <Button
                                 type="text"
-                                icon={<NotificationOutlined style={{ fontSize: 16, color: colors.white }} />}
+                                icon={<NotificationOutlined style={{ fontSize: 18, color: colors.layout.headerText }} />}
                                 style={{
-                                    color: colors.white,
+                                    color: colors.layout.headerText,
                                     width: 40,
                                     height: 40,
                                     padding: 0,
@@ -218,7 +221,7 @@ const Authorized = ({ children, userName }) => {
                             <Popover
                                 content={
                                     <div style={{
-                                        backgroundColor: '#fff',
+                                        backgroundColor: colors.white,
                                         borderRadius: '8px',
                                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                                         overflow: 'hidden',
@@ -242,8 +245,8 @@ const Authorized = ({ children, userName }) => {
                                         minHeight: 32,
                                     }}
                                 >
-                                    <Avatar size={32} icon={<UserOutlined />} style={{ backgroundColor: 'rgba(255,255,255,0.25)', flexShrink: 0 }} />
-                                    <Text style={{ color: colors.white, fontWeight: 500, lineHeight: '32px', height: 32, margin: 0, display: 'block' }}>Admin</Text>
+                                    <Avatar size={32} icon={<UserOutlined />} style={{ backgroundColor: 'rgba(255,255,255,0.25)', color: colors.layout.headerText, flexShrink: 0 }} />
+                                    <Text style={{ color: colors.layout.headerText, fontWeight: 500, lineHeight: '32px', height: 32, margin: 0, display: 'block' }}>Admin</Text>
                                 </a>
                             </Popover>
                         </Space>
@@ -267,5 +270,11 @@ const Authorized = ({ children, userName }) => {
         </Layout>
     );
 };
+
+const Authorized = ({ children, userName }) => (
+    <FilterSearchProvider>
+        <AuthorizedLayout children={children} userName={userName} />
+    </FilterSearchProvider>
+);
 
 export default Authorized;

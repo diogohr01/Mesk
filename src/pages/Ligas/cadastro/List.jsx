@@ -1,8 +1,9 @@
 import { Button, Col, Form, Input, Layout, message, Modal, Row, Space } from 'antd';
 import { debounce } from 'lodash';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineClear, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { Card, LoadingSpinner, PaginatedTable, ActionButtons } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import LigasService from '../../../services/ligasService';
 
 const { confirm } = Modal;
@@ -12,18 +13,23 @@ const List = ({ onAdd, onEdit, onView }) => {
   const [loading, setLoading] = useState(false);
   const [filterForm] = Form.useForm();
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
 
   const debouncedReloadTable = useMemo(
     () => debounce(() => { if (tableRef.current) tableRef.current.reloadTable(); }, 300),
     []
   );
 
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
+
   const fetchData = useCallback(
     async (page, pageSize, sorterField, sortOrder) => {
       setLoading(true);
       try {
         const filters = filterForm.getFieldsValue();
-        const response = await LigasService.getAll({ page, pageSize, sorterField, sortOrder, ...filters });
+        const response = await LigasService.getAll({ page, pageSize, sorterField, sortOrder, ...filters, search: searchTerm?.trim() || undefined });
         return {
           data: response.data?.data || [],
           total: response.data?.pagination?.totalRecords || 0,
@@ -35,7 +41,7 @@ const List = ({ onAdd, onEdit, onView }) => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
 
   const handleDelete = useCallback((record) => {
@@ -111,7 +117,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                       <Form.Item label=" " style={{ marginBottom: '4px' }}>
                         <Space size="small">
                           <Button type="primary" htmlType="submit" size="middle" icon={<AiOutlineSearch />} loading={loading}>Filtrar</Button>
-                          <Button size="middle" icon={<AiOutlineClear />} onClick={() => { filterForm.resetFields(); debouncedReloadTable(); }}>Limpar</Button>
+                          <Button size="middle" icon={<AiOutlineClear />} onClick={() => { filterForm.resetFields(); clearSearch(); debouncedReloadTable(); }}>Limpar</Button>
                         </Space>
                       </Form.Item>
                     </Col>

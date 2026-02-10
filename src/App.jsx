@@ -26,10 +26,10 @@ function App() {
                 },
                 components: {
                     Table: {
-                        headerBg: colors.backgroundGray,
+                        headerBg: colors.background,
                         headerColor: colors.text.primary,
                         headerSplitColor: colors.backgroundGray,
-                        borderColor: '#f0f0f0',
+                        borderColor: '#e0e0e0',
                         rowHoverBg: colors.background,
                         cellPaddingBlock: 6,
                         cellPaddingInline: 10,

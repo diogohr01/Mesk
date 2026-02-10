@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AiFillDelete, AiFillEdit, AiOutlineClear, AiOutlinePlus, AiOutlineSearch } from 'react-icons/ai';
 import { Card, LoadingSpinner, PaginatedTable, ActionButtons } from '../../../components';
+import { useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import ClientesService from '../../../services/clientesService';
 
 const { confirm } = Modal;
@@ -13,6 +14,7 @@ const List = ({ onAdd, onEdit, onView }) => {
   const [loading, setLoading] = useState(false);
   const [filterForm] = Form.useForm();
   const tableRef = useRef(null);
+  const { searchTerm, clearSearch } = useFilterSearchContext();
 
   // Função debounced para aplicar filtros
   const debouncedReloadTable = useMemo(
@@ -23,6 +25,10 @@ const List = ({ onAdd, onEdit, onView }) => {
     }, 300),
     []
   );
+
+  useEffect(() => {
+    debouncedReloadTable();
+  }, [searchTerm, debouncedReloadTable]);
 
   // Atualiza o fetchData para incluir os filtros
   const fetchData = useCallback(
@@ -36,6 +42,7 @@ const List = ({ onAdd, onEdit, onView }) => {
           sorterField,
           sortOrder,
           ...filters,
+          search: searchTerm?.trim() || undefined,
         };
 
         const response = await ClientesService.getAll(requestData);
@@ -52,7 +59,7 @@ const List = ({ onAdd, onEdit, onView }) => {
         setLoading(false);
       }
     },
-    [filterForm]
+    [filterForm, searchTerm]
   );
 
   const handleEdit = useCallback((record) => {
@@ -285,6 +292,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                             icon={<AiOutlineClear />}
                             onClick={() => {
                               filterForm.resetFields();
+                              clearSearch();
                               debouncedReloadTable();
                             }}
                             style={{ minWidth: '80px', flex: 1 }}

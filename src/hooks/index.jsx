@@ -9,5 +9,6 @@ const AppProvider = ({ children }) => (
 // Exportar todos os hooks
 export { useAuth } from './auth';
 export { default as useLazyComponent } from './useLazyComponent';
+export { useFilterSearch } from './useFilterSearch';
 
 export default AppProvider;
