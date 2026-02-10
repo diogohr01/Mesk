@@ -92,7 +92,7 @@ export const defaultRoutes = [
         label: 'PCP', 
         roles: [roles.roleAdmin],
         children: [
-            { key: '/dashboard', icon: <AiFillHome />, label: 'Dashboard', element: Dashboard, roles: [roles.roleAdmin] },
+            { key: '/', icon: <AiFillHome />, label: 'Dashboard', element: Dashboard, roles: [roles.roleAdmin] },
             { key: '/ordem-producao/cadastro', icon: <AiOutlineFileText />, label: 'Ordem de Produção', element: OrdemProducaoCadastro, roles: [roles.roleAdmin] },
             { key: '/ordem-producao/gantt', icon: <AiOutlineSchedule />, label: 'Gantt de Produção', element: GanttProducao, roles: [roles.roleAdmin] },
             { key: '/pedidos/cadastro', icon: <AiOutlineFileText />, label: 'Pedidos', element: PedidosCadastro, roles: [roles.roleAdmin] },
