@@ -6,6 +6,9 @@ export const colors = {
   primary: "#243b5e",
   primaryLight: "rgba(255,255,255,0.14)", // mesmo tom que primary, mais claro (hue ~217°)
   primaryDark: "#1a2d47",
+  backgroundGradient: "linear-gradient(90deg,rgba(36, 59, 94, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%);",
+  /** Cores para ícones com gradient SVG [início, fim] */
+  iconGradient: ['#243b5e', '#385E9D'],
   secondary: "#52c41a",
   accent: "#722ed1",
   background: "#fafafa",

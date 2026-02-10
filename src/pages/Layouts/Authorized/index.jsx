@@ -1,14 +1,14 @@
-import { AppstoreOutlined, DownOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Divider, Dropdown, Layout, Menu, Popover, Row, Space, Typography } from 'antd';
+import { AppstoreOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Col, Divider, Layout, Popover, Row, Space, Typography } from 'antd';
 import { Card, HeaderSearchInput } from '../../../components';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo from '../../../assets/logo.png';
 import { Modal } from '../../../components';
 import { FilterSearchProvider, useFilterSearchContext } from '../../../contexts/FilterSearchContext';
 import { useAuth } from '../../../hooks/auth';
 import { defaultRoutes } from '../../../routes/routes';
 import { colors } from '../../../styles/colors';
+import { StyledSidebarMenu } from './SidebarMenu.styles';
 
 const { Header, Content, Sider } = Layout;
 const { Text, Title } = Typography;
@@ -121,143 +121,143 @@ const AuthorizedLayout = ({ children, userName }) => {
         navigate(0); // Recarrega a página
     };
 
-    // Definição dos itens do menu lateral
+    // Definição dos itens do menu lateral (estilos em SidebarMenu.styles.js)
     const sidebarMenu = (
-        <Menu
-            className="app-sidebar-menu"
+        <StyledSidebarMenu
             mode="inline"
             selectedKeys={[location.pathname]}
             openKeys={openKeys}
             onOpenChange={handleOpenChange}
-            style={{ height: '100%', borderRight: 0, marginTop: 60 }}
-            onClick={handleMenuClick} // Adiciona a lógica de clique no menu
-            items={generateMenuItems(routes)} // Gera os itens do menu dinamicamente
+            onClick={handleMenuClick}
+            items={generateMenuItems(routes)}
         />
     );
 
     return (
-        <Layout style={{ minHeight: '100vh', height: '100vh', width: '100%', overflow: 'hidden' }}>
-            <Layout style={{ flexDirection: 'row', height: '100vh', width: '100%', overflow: 'hidden' }}>
-                <Sider
-                    collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
-                    width={230}
-                    style={{
-                        backgroundColor: colors.white,
-                        position: 'sticky',
-                        top: 0,
-                        height: '100%',
-                        minHeight: '100vh',
-                        willChange: 'width',
-                        overflowY: 'auto',
-                        transform: 'translateZ(0)',
-                        borderRight: `1px solid ${colors.layout.siderBorder}`,
-                        transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                >
+        <Layout style={{ minHeight: '100vh', height: '100vh', width: '100%', overflow: 'hidden', flexDirection: 'column' }}>
+            <Header
+                style={{
+                    flexShrink: 0,
+                    backgroundColor: colors.layout.headerBg,
+                    padding: '0 16px',
+                    borderBottom: `1px solid ${colors.layout.headerBorder}`,
+                    height: 60,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <div style={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
                     <div
                         style={{
                             background: colors.layout.siderBg,
                             height: 64,
                             padding: '0 16px',
                             boxSizing: 'border-box',
-                            
+                            borderRight: `1px solid ${colors.white}`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: collapsed ? 'center' : 'flex-start',
                             gap: 12,
+                            flexShrink: 0,
                         }}
                     >
-                        <div
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginRight: 30 }}>
+                            <div
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 8,
+                                    background: 'rgba(255,255,255,0.14)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <AppstoreOutlined style={{ fontSize: 22, color: colors.layout.siderText }} />
+                            </div>
+                            {!collapsed && (
+                                <div style={{ minWidth: 0 }}>
+                                    <div style={{ color: colors.layout.siderText, fontSize: 18, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
+                                    <div style={{ color: colors.layout.siderTextMuted, fontSize: 12, lineHeight: 1.3 }}>Sequenciamento</div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <HeaderSearchInput placeholder="Pesquisar OP, codigo, cliente..." {...searchProps} style={{ marginLeft: 24, flexShrink: 0 }} />
+                </div>
+                <Space size="middle" align="center" style={{ borderLeft: `0.5px solid ${colors.white}` }}>
+                    <Button
+                        type="text"
+                        icon={<NotificationOutlined style={{ fontSize: 18, color: colors.layout.headerText }} />}
+                        style={{
+                            color: colors.layout.headerText,
+                            width: 40,
+                            height: 40,
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    />
+                    <Popover
+                        content={
+                            <div style={{
+                                backgroundColor: colors.white,
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                                overflow: 'hidden',
+                                margin: '-12px -16px'
+                            }}>
+                                <UserProfile userName={'Teste'} userRole={'Admin'} appVersion={'1.0.0'} />
+                            </div>
+                        }
+                        trigger="click"
+                        placement="bottomRight"
+                        overlayStyle={{ padding: 0, zIndex: 1050 }}
+                    >
+                        <a
+                            onClick={(e) => e.preventDefault()}
                             style={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: 8,
-                                background: 'rgba(255,255,255,0.14)',
-                                display: 'flex',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                flexShrink: 0,
+                                gap: 8,
+                                height: 32,
+                                minHeight: 32,
                             }}
                         >
-                            <AppstoreOutlined style={{ fontSize: 22, color: colors.layout.siderText }} />
-                        </div>
-                        {!collapsed && (
-                            <div style={{ minWidth: 0 }}>
-                                <div style={{ color: colors.layout.siderText, fontSize: 18, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
-                                <div style={{ color: colors.layout.siderTextMuted, fontSize: 12, lineHeight: 1.3 }}>Sequenciamento</div>
-                            </div>
-                        )}
-                    </div>
-                    <Divider style={{ margin: 0}} />
+                            <Avatar size={32} icon={<UserOutlined />} style={{ backgroundColor: 'rgba(255,255,255,0.25)', color: colors.layout.headerText, flexShrink: 0 }} />
+                            <Text style={{ color: colors.layout.headerText, fontWeight: 500, lineHeight: '32px', height: 32, margin: 0, display: 'block' }}>Admin</Text>
+                        </a>
+                    </Popover>
+                </Space>
+            </Header>
+
+            <Layout style={{ flex: 1, flexDirection: 'row', minHeight: 0, overflow: 'hidden' }}>
+                <Sider
+                    collapsed={collapsed}
+                    onCollapse={(value) => setCollapsed(value)}
+                    width={230}
+                    style={{
+                        backgroundColor: colors.white,
+                        height: '100%',
+                        overflowY: 'auto',
+                        willChange: 'width',
+                        transform: 'translateZ(0)',
+                        borderRight: `1px solid ${colors.layout.siderBorder}`,
+                        transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                >
+                   
+                    <Divider style={{ margin: 0 }} />
                     {sidebarMenu}
                 </Sider>
 
-                <Layout style={{ flex: 1, minWidth: 0 }}>
-                    <Header
-                        style={{
-                            backgroundColor: colors.layout.headerBg,
-                            padding: '0 16px',
-                            borderBottom: `1px solid ${colors.layout.headerBorder}`,
-                            height: 64,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                            <HeaderSearchInput placeholder="Pesquisar" {...searchProps}  style={{marginLeft: 4}} />
-                        <Space size="middle" align="center" style={{borderLeft: `0.5px solid ${colors.white}`}}>
-                            <Button
-                                type="text"
-                                icon={<NotificationOutlined style={{ fontSize: 18, color: colors.layout.headerText }} />}
-                                style={{
-                                    color: colors.layout.headerText,
-                                    width: 40,
-                                    height: 40,
-                                    padding: 0,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            />
-                            <Popover
-                                content={
-                                    <div style={{
-                                        backgroundColor: colors.white,
-                                        borderRadius: '8px',
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                                        overflow: 'hidden',
-                                        margin: '-12px -16px'
-                                    }}>
-                                        <UserProfile userName={'Teste'} userRole={'Admin'} appVersion={'1.0.0'} />
-                                    </div>
-                                }
-                                trigger="click"
-                                placement="bottomRight"
-                                overlayStyle={{ padding: 0, zIndex: 1050 }}
-                            >
-                                <a
-                                    onClick={(e) => e.preventDefault()}
-                                    style={{
-                                        cursor: 'pointer',
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 8,
-                                        height: 32,
-                                        minHeight: 32,
-                                    }}
-                                >
-                                    <Avatar size={32} icon={<UserOutlined />} style={{ backgroundColor: 'rgba(255,255,255,0.25)', color: colors.layout.headerText, flexShrink: 0 }} />
-                                    <Text style={{ color: colors.layout.headerText, fontWeight: 500, lineHeight: '32px', height: 32, margin: 0, display: 'block' }}>Admin</Text>
-                                </a>
-                            </Popover>
-                        </Space>
-                    </Header>
-
-                    <Content style={{ padding: '20px', margin: 0, minHeight: 280, minWidth: 0, overflowX: 'auto' }}>
-                        <main role="main">{children}</main>
-                    </Content>
-                </Layout>
+                <Content style={{ padding: '20px', margin: 0, minHeight: 280, minWidth: 0, overflow: 'auto' }}>
+                    <main role="main">{children}</main>
+                </Content>
             </Layout>
 
             {/* Modal de confirmação para recarregar a página */}

@@ -6,3 +6,4 @@ export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as Modal } from './Modal';
 export { default as HeaderSearchInput } from './HeaderSearchInput';
 export { default as StyledScroll } from './StyledScroll';
+export { default as GradientizeIcon } from './GradientizeIcon';

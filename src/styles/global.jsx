@@ -158,40 +158,6 @@ export default createGlobalStyle`
         outline: none !important;
     }
 
-    /* Menu do Sider: menos espaço à esquerda e cores alinhadas ao layout */
-    .app-sidebar-menu.ant-menu-inline .ant-menu-item,
-    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title {
-        padding-left: 12px !important;
-        color: ${colors.text.primary} !important;
-    }
-    .app-sidebar-menu.ant-menu-inline .ant-menu-item .anticon,
-    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title .anticon {
-        color: ${colors.text.secondary} !important;
-    }
-    .app-sidebar-menu.ant-menu-inline .ant-menu-item:hover,
-    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title:hover {
-        color: ${colors.primary} !important;
-        background: ${colors.primary}08 !important;
-    }
-    .app-sidebar-menu.ant-menu-inline .ant-menu-item:hover .anticon,
-    .app-sidebar-menu.ant-menu-inline .ant-menu-submenu-title:hover .anticon {
-        color: ${colors.primary} !important;
-    }
-    .app-sidebar-menu.ant-menu-inline .ant-menu-sub .ant-menu-item {
-        padding-left: 24px !important;
-    }
-
-    /* Item selecionado do menu do Sider: marcação da rota */
-    .app-sidebar-menu .ant-menu-item-selected {
-        background: ${colors.primary}12 !important;
-        color: ${colors.primary} !important;
-        border-left: 3px solid ${colors.primary};
-        border-radius: 6px;
-    }
-    .app-sidebar-menu .ant-menu-item-selected .anticon {
-        color: ${colors.primary} !important;
-    }
-
     /* Corrigir posicionamento do dropdown do perfil do usuário */
     .user-profile-dropdown {
         position: absolute !important;

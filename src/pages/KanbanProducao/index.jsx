@@ -91,7 +91,18 @@ const KanbanProducao = () => {
               icon={<AppstoreOutlined style={{ color: colors.primary }} />}
               loading={loading}
             >
-              <StyledScroll style={{ display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 16, minHeight: 280 }}>
+              <StyledScroll
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  gap: 16,
+                  overflowX: 'auto',
+                  paddingBottom: 16,
+                  minHeight: 280,
+                  flexWrap: 'nowrap',
+                }}
+                className="kanban-board-scroll"
+              >
                 {KANBAN_STATUSES.map((status) => {
                   const colOps = getOPsByStatus(status);
                   const isOver = overColumn === status;
@@ -99,12 +110,14 @@ const KanbanProducao = () => {
                   return (
                     <div
                       key={status}
+                      className="kanban-column"
                       onDragOver={(e) => handleDragOver(e, status)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, status)}
                       style={{
-                        flexShrink: 0,
-                        width: 260,
+                        flex: '1 1 0',
+                        minWidth: 240,
+                        maxWidth: 380,
                         borderRadius: 8,
                         border: `1px solid ${colors.borderColor}`,
                         borderTopWidth: 3,
