@@ -71,7 +71,7 @@ const View = ({ record, onEdit, onCancel }) => {
                     <Text strong style={{ display: 'block', marginBottom: 4 }}>
                       Nome
                     </Text>
-                    <Text type="secondary" style={{ fontSize: 14 }}>
+                    <Text type="secondary" style={{ fontSize: 13 }}>
                       {data.nome || '—'}
                     </Text>
                   </div>
@@ -80,7 +80,7 @@ const View = ({ record, onEdit, onCancel }) => {
                       <Text strong style={{ display: 'block', marginBottom: 4 }}>
                         Descrição
                       </Text>
-                      <Text type="secondary" style={{ fontSize: 14 }}>
+                      <Text type="secondary" style={{ fontSize: 13 }}>
                         {data.descricao}
                       </Text>
                     </div>
@@ -97,7 +97,7 @@ const View = ({ record, onEdit, onCancel }) => {
                       <Text strong>Pesos dos critérios</Text>
                       <span
                         style={{
-                          fontSize: 12,
+                          fontSize: 11,
                           fontFamily: 'monospace',
                           padding: '2px 8px',
                           borderRadius: 4,
@@ -124,12 +124,12 @@ const View = ({ record, onEdit, onCancel }) => {
                               backgroundColor: colors.background,
                             }}
                           >
-                            <span style={{ fontSize: 12, color: colors.text.secondary }}>
+                            <span style={{ fontSize: 11, color: colors.text.secondary }}>
                               {index + 1}. {c.label}
                             </span>
                             <span
                               style={{
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: 600,
                                 color: colors.primary,
                               }}

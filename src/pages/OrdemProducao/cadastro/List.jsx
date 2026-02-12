@@ -377,7 +377,7 @@ const List = ({ onAdd, onEdit, onView }) => {
         }
         return (
           <div style={{ marginLeft: 24, padding: 12, background: '#fafafa', borderRadius: 6, border: '1px solid #f0f0f0' }}>
-            <Text strong style={{ display: 'block', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.text.secondary, marginBottom: 8 }}>OPs Filhas</Text>
+            <Text strong style={{ display: 'block', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.text.secondary, marginBottom: 8 }}>OPs Filhas</Text>
             <Table
               dataSource={filhas}
               columns={columnsFilhas}

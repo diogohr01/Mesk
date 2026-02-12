@@ -58,7 +58,7 @@ const SwitchGroup = ({
             <div key={id} style={{ marginBottom: layout === 'vertical' ? 16 : 8 }}>
                 <Space direction="vertical" size={4} style={{ width: '100%' }}>
                     {label && (
-                        <Text strong style={{ fontSize: '14px' }}>
+                        <Text strong style={{ fontSize: '13px' }}>
                             {label}
                         </Text>
                     )}
@@ -74,7 +74,7 @@ const SwitchGroup = ({
                     />
                     
                     {switchDescription && (
-                        <Text type="secondary" style={{ fontSize: '12px' }}>
+                        <Text type="secondary" style={{ fontSize: '11px' }}>
                             <InfoCircleOutlined style={{ marginRight: 4 }} />
                             {switchDescription}
                         </Text>
@@ -96,7 +96,7 @@ const SwitchGroup = ({
                 )}
                 
                 {description && (
-                    <Text type="secondary" style={{ fontSize: '13px' }}>
+                    <Text type="secondary" style={{ fontSize: '12px' }}>
                         <InfoCircleOutlined style={{ marginRight: 4 }} />
                         {description}
                     </Text>

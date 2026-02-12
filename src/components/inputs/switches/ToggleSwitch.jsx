@@ -68,7 +68,7 @@ const ToggleSwitch = ({
         <div className={className} style={style}>
             <Space direction="vertical" size={4} style={{ width: '100%' }}>
                 {label && (
-                    <Text strong style={{ fontSize: '14px' }}>
+                    <Text strong style={{ fontSize: '13px' }}>
                         {label}
                     </Text>
                 )}
@@ -82,7 +82,7 @@ const ToggleSwitch = ({
                 )}
                 
                 {description && (
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                    <Text type="secondary" style={{ fontSize: '11px' }}>
                         <InfoCircleOutlined style={{ marginRight: 4 }} />
                         {description}
                     </Text>

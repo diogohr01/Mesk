@@ -101,7 +101,7 @@ export default createGlobalStyle`
     }
 
     html {
-        font-size: 14px;
+        font-size: 13px;
         position: relative;
         min-height: 100%;
     }

@@ -43,7 +43,7 @@ dayjs.locale('pt-br');
  */
 export function useGanttTime(zoom, rangeStart, rangeEnd, scale = 1) {
   return useMemo(() => {
-    let cellWidth = 64;
+    let cellWidth = 56;
     const columns = [];
     let dayGroups = [];
     let hasSubHeader = false;
@@ -74,7 +74,7 @@ export function useGanttTime(zoom, rangeStart, rangeEnd, scale = 1) {
 
     switch (zoom) {
       case 'hora': {
-        cellWidth = Math.round(80 * scale);
+        cellWidth = Math.round(72 * scale);
         const hours = addHours(start, end.add(-1, 'hour'));
         hours.forEach((h) => {
           columns.push({ date: h, label: h.format('HH:mm') });
@@ -108,7 +108,7 @@ export function useGanttTime(zoom, rangeStart, rangeEnd, scale = 1) {
             });
           });
         });
-        cellWidth = Math.round(64 * scale);
+        cellWidth = Math.round(56 * scale);
         dayGroups = days.map((d) => ({
           date: d,
           label: d.format('ddd DD/MM'),
@@ -118,7 +118,7 @@ export function useGanttTime(zoom, rangeStart, rangeEnd, scale = 1) {
         break;
       }
       case 'semana': {
-        cellWidth = Math.round(120 * scale);
+        cellWidth = Math.round(108 * scale);
         const days = addDays(start, end.add(-1, 'day'));
         days.forEach((d) => {
           columns.push({
@@ -146,7 +146,7 @@ export function useGanttTime(zoom, rangeStart, rangeEnd, scale = 1) {
         break;
       }
       case 'mes': {
-        cellWidth = Math.round(300 * scale);
+        cellWidth = Math.round(270 * scale);
         const months = [];
         let current = dayjs(start).startOf('month');
         const endMonth = dayjs(end).startOf('month');

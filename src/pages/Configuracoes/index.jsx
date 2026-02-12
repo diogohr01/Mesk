@@ -239,7 +239,7 @@ const Configuracoes = () => {
             <Text style={{ flex: '1 1 auto', minWidth: 0 }}>
               {record.descricao || '—'}
             </Text>
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            <Text type="secondary" style={{ fontSize: 11 }}>
               {record.dataInicio && dayjs(record.dataInicio).format('DD/MM/YYYY')}
               {record.dataFim && record.dataFim !== record.dataInicio
                 ? ` — ${dayjs(record.dataFim).format('DD/MM/YYYY')}`
@@ -273,7 +273,7 @@ const Configuracoes = () => {
         <h2
           style={{
             margin: 0,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 600,
             color: colors.text.primary,
             display: 'flex',
@@ -284,7 +284,7 @@ const Configuracoes = () => {
           <SettingOutlined style={{ color: colors.primary }} />
           Configurações
         </h2>
-        <Text type="secondary" style={{ fontSize: 14 }}>
+        <Text type="secondary" style={{ fontSize: 13 }}>
           Parâmetros de sequenciamento e integração
         </Text>
       </div>
@@ -302,7 +302,7 @@ const Configuracoes = () => {
               <Space wrap>
                 <span
                   style={{
-                    fontSize: 12,
+                    fontSize: 11,
                     fontFamily: 'monospace',
                     padding: '2px 8px',
                     borderRadius: 4,
@@ -329,7 +329,7 @@ const Configuracoes = () => {
             }
             style={{ borderColor: colors.backgroundGray }}
           >
-            <Text type="secondary" style={{ display: 'block', fontSize: 12, marginBottom: 12 }}>
+            <Text type="secondary" style={{ display: 'block', fontSize: 11, marginBottom: 12 }}>
               Arraste para reordenar a prioridade. Ajuste os sliders para alterar os pesos.
             </Text>
             <DragDropContext onDragEnd={onDragEnd}>
@@ -401,7 +401,7 @@ const Configuracoes = () => {
         }
         style={{ borderColor: colors.backgroundGray }}
       >
-        <Text type="secondary" style={{ display: 'block', fontSize: 12, marginBottom: 12 }}>
+        <Text type="secondary" style={{ display: 'block', fontSize: 11, marginBottom: 12 }}>
           Feriados, manutenções e dias sem produção; exibidos como blocos no Gantt.
         </Text>
 
@@ -471,11 +471,11 @@ function CriterioRow({ item, index, onValueChange }) {
             style={{ cursor: 'grab', display: 'flex', alignItems: 'center' }}
             title="Arraste para reordenar"
           >
-            <HolderOutlined style={{ color: colors.text.secondary, fontSize: 16 }} />
+            <HolderOutlined style={{ color: colors.text.secondary, fontSize: 15 }} />
           </span>
           <span
             style={{
-              fontSize: 12,
+              fontSize: 11,
               fontFamily: 'monospace',
               color: colors.text.secondary,
               width: 20,
@@ -486,7 +486,7 @@ function CriterioRow({ item, index, onValueChange }) {
           </span>
           <span
             style={{
-              fontSize: 14,
+              fontSize: 13,
               color: colors.text.primary,
               width: 140,
               flexShrink: 0,
@@ -509,7 +509,7 @@ function CriterioRow({ item, index, onValueChange }) {
           </div>
           <span
             style={{
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: 600,
               color: colors.primary,
               width: 36,
@@ -536,13 +536,13 @@ function LinhaStatus({ label, valor, badgeSuccess, mono, last }) {
         borderBottom: last ? 'none' : `1px solid ${colors.backgroundGray}`,
       }}
     >
-      <Text type="secondary" style={{ fontSize: 14 }}>
+      <Text type="secondary" style={{ fontSize: 13 }}>
         {label}
       </Text>
       {badgeSuccess ? (
         <span
           style={{
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: 500,
             color: '#52c41a',
             backgroundColor: 'rgba(82, 196, 26, 0.15)',
@@ -555,7 +555,7 @@ function LinhaStatus({ label, valor, badgeSuccess, mono, last }) {
       ) : (
         <Text
           style={{
-            fontSize: 12,
+            fontSize: 11,
             fontFamily: mono ? 'monospace' : 'inherit',
           }}
         >

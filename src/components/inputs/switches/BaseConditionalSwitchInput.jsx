@@ -58,7 +58,7 @@ const BaseConditionalSwitchInput = ({
     return (
         <Space direction="vertical" size="small" style={{ width: '100%' }}>
             {label && (
-                <Text strong style={{ fontSize: '14px' }}>
+                <Text strong style={{ fontSize: '13px' }}>
                     {label}
                 </Text>
             )}
@@ -74,7 +74,7 @@ const BaseConditionalSwitchInput = ({
             />
             
             {description && (
-                <Text type="secondary" style={{ fontSize: '12px' }}>
+                <Text type="secondary" style={{ fontSize: '11px' }}>
                     <InfoCircleOutlined style={{ marginRight: 4 }} />
                     {description}
                 </Text>
@@ -86,7 +86,7 @@ const BaseConditionalSwitchInput = ({
                     type={warningType}
                     icon={<ExclamationCircleOutlined />}
                     showIcon
-                    style={{ fontSize: '12px' }}
+                    style={{ fontSize: '11px' }}
                 />
             )}
             
@@ -95,7 +95,7 @@ const BaseConditionalSwitchInput = ({
                     message="Este switch está desabilitado devido a condições específicas"
                     type="info"
                     showIcon
-                    style={{ fontSize: '12px' }}
+                    style={{ fontSize: '11px' }}
                 />
             )}
         </Space>

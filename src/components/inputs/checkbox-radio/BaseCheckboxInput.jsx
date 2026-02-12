@@ -133,7 +133,7 @@ const BaseCheckboxInput = ({
     // Se não há opções válidas, mostrar mensagem de erro ou componente simples
     if (type === 'radio' && validOptions.length === 0) {
         return (
-            <div style={{ color: 'red', fontSize: '12px' }}>
+            <div style={{ color: 'red', fontSize: '11px' }}>
                 Erro: Nenhuma opção válida encontrada para o radio button
             </div>
         );

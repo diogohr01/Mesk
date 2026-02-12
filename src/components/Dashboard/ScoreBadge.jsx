@@ -13,7 +13,7 @@ const ScoreBadge = memo(({ score, size = 'sm' }) => {
     return 'error';
   };
 
-  const sizeStyle = size === 'sm' ? { fontSize: 12, padding: '0 6px', lineHeight: '20px' } : { fontSize: 14, padding: '2px 8px', lineHeight: '22px' };
+  const sizeStyle = size === 'sm' ? { fontSize: 11, padding: '0 6px', lineHeight: '20px' } : { fontSize: 13, padding: '2px 8px', lineHeight: '22px' };
 
   return (
     <Tag color={getColor()} style={{ margin: 0, fontFamily: 'monospace', fontWeight: 600, ...sizeStyle }}>

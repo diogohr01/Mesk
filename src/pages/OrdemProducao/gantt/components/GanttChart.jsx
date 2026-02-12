@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { Loading, StyledScroll } from '../../../../components';
 import { getBarPosition, positionToDate } from '../../../../hooks/useGanttTime';
 
-const LANE_HEIGHT = 88;
-const HEADER_HEIGHT = 40;
-const RESOURCE_COL_WIDTH = 200;
+const LANE_HEIGHT = 76;
+const HEADER_HEIGHT = 34;
+const RESOURCE_COL_WIDTH = 180;
 
 function getBarColor(filha, pai) {
   const today = dayjs();
@@ -84,10 +84,10 @@ const GanttBar = memo(function GanttBar({
   const tooltipTitle = (
     <div style={{ maxWidth: 300 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 12, fontWeight: 700 }}>{filha.codigo}</span>
+        <span style={{ fontSize: 11, fontWeight: 700 }}>{filha.codigo}</span>
         <span
           style={{
-            fontSize: 9,
+            fontSize: 8,
             padding: '2px 6px',
             borderRadius: 2,
             fontWeight: 700,
@@ -98,7 +98,7 @@ const GanttBar = memo(function GanttBar({
           {riskLabel}
         </span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 11 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 10 }}>
         <span style={{ color: '#8c8c8c' }}>OP Pai:</span>
         <span style={{ fontFamily: 'monospace' }}>{pai.codigo}</span>
         <span style={{ color: '#8c8c8c' }}>Produto:</span>
@@ -119,11 +119,11 @@ const GanttBar = memo(function GanttBar({
         <span style={{ fontWeight: 700 }}>{filha.score}</span>
       </div>
       {isLate && (
-        <p style={{ fontSize: 10, color: '#ff4d4f', fontWeight: 700, margin: '8px 0 0 0' }}>
+        <p style={{ fontSize: 9, color: '#ff4d4f', fontWeight: 700, margin: '8px 0 0 0' }}>
           PROGRAMAÇÃO NÃO ATINGE DATA DE ENTREGA
         </p>
       )}
-      <p style={{ fontSize: 9, color: '#8c8c8c', margin: '8px 0 0 0', fontStyle: 'italic' }}>
+      <p style={{ fontSize: 8, color: '#8c8c8c', margin: '8px 0 0 0', fontStyle: 'italic' }}>
         Arraste para re-sequenciar • Clique para editar
       </p>
     </div>
@@ -190,11 +190,11 @@ const GanttBar = memo(function GanttBar({
             }}
           >
             {(isLate || isRisk) && (
-              <span style={{ fontSize: 13, flexShrink: 0 }}>⚠</span>
+              <span style={{ fontSize: 11, flexShrink: 0 }}>⚠</span>
             )}
             <span
               style={{
-                fontSize: 14,
+                fontSize: 11,
                 fontWeight: 700,
                 color: '#fff',
                 overflow: 'hidden',
@@ -208,7 +208,7 @@ const GanttBar = memo(function GanttBar({
             {pos.width > 70 && (
               <span
                 style={{
-                  fontSize: 13,
+                  fontSize: 11,
                   color: 'rgba(255,255,255,0.7)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -222,7 +222,7 @@ const GanttBar = memo(function GanttBar({
             {pos.width > 110 && (
               <span
                 style={{
-                  fontSize: 13,
+                  fontSize: 11,
                   color: 'rgba(255,255,255,0.5)',
                   marginLeft: 'auto',
                   fontFamily: 'monospace',
@@ -415,7 +415,7 @@ function GanttChart({
             height: headerHeight,
           }}
         >
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#8c8c8c', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#8c8c8c', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Recurso
           </span>
         </div>
@@ -432,16 +432,16 @@ function GanttChart({
             }}
           >
             <div style={{ minWidth: 0, flex: 1 }}>
-              <p style={{ fontSize: 15, fontWeight: 600, color: '#262626', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: '#262626', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {r.nome}
               </p>
-              <p style={{ fontSize: 13, color: '#8c8c8c', margin: 0 }}>{r.capacidade}</p>
+              <p style={{ fontSize: 11, color: '#8c8c8c', margin: 0 }}>{r.capacidade}</p>
             </div>
             {r.status === 'manutencao' && (
               <span
                 style={{
                   marginLeft: 8,
-                  fontSize: 12,
+                  fontSize: 11,
                   backgroundColor: 'rgba(255,77,79,0.2)',
                   color: '#ff4d4f',
                   padding: '4px 6px',
@@ -484,7 +484,7 @@ function GanttChart({
                       width: group.colSpan * timeConfig.cellWidth,
                     }}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 600, color: '#262626', textTransform: 'capitalize' }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#262626', textTransform: 'capitalize' }}>
                       {group.label}
                     </span>
                   </div>
@@ -510,9 +510,9 @@ function GanttChart({
                     width: timeConfig.cellWidth,
                   }}
                 >
-                  <span style={{ fontSize: 13, color: '#8c8c8c', fontFamily: 'monospace' }}>{col.label}</span>
+                  <span style={{ fontSize: 11, color: '#8c8c8c', fontFamily: 'monospace' }}>{col.label}</span>
                   {col.subLabel && (
-                    <span style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>{col.subLabel}</span>
+                    <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)' }}>{col.subLabel}</span>
                   )}
                 </div>
               ))}
@@ -549,12 +549,12 @@ function GanttChart({
                   borderLeft: isLate ? '3px solid hsl(0, 90%, 60%)' : isRisk ? '3px solid hsl(38, 92%, 60%)' : 'none',
                 }}
               >
-                {(isLate || isRisk) && <span style={{ fontSize: 13, flexShrink: 0 }}>⚠</span>}
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textShadow: '0 1px 1px rgba(0,0,0,0.2)' }}>
+                {(isLate || isRisk) && <span style={{ fontSize: 11, flexShrink: 0 }}>⚠</span>}
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textShadow: '0 1px 1px rgba(0,0,0,0.2)' }}>
                   {filha.codigo.split('-').slice(-1)[0]}
                 </span>
                 {dragging.barWidth > 70 && (
-                  <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'monospace' }}>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: 'monospace' }}>
                     {pai.liga}
                   </span>
                 )}
@@ -579,7 +579,7 @@ function GanttChart({
                 position: 'absolute',
                 top: -22,
                 left: -14,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 700,
                 color: '#385E9D',
                 backgroundColor: 'rgba(56,94,157,0.2)',
@@ -640,7 +640,7 @@ function GanttChart({
                             <p style={{ fontWeight: 600, color: '#ff4d4f', margin: '0 0 4px 0' }}>
                               {m.tipo === 'manutencao' ? 'Manutenção' : 'Parada'}
                             </p>
-                            <p style={{ margin: 0, fontSize: 12 }}>{m.descricao}</p>
+                            <p style={{ margin: 0, fontSize: 11 }}>{m.descricao}</p>
                             <p style={{ margin: '4px 0 0 0', fontSize: 11, fontFamily: 'monospace' }}>
                               {m.dataInicio} → {m.dataFim}
                             </p>

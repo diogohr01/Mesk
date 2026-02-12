@@ -22,7 +22,7 @@ function GanttLegend() {
               backgroundColor: item.color,
             }}
           />
-          <span style={{ fontSize: 14, color: '#8c8c8c' }}>{item.label}</span>
+          <span style={{ fontSize: 13, color: '#8c8c8c' }}>{item.label}</span>
         </div>
       ))}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -35,15 +35,15 @@ function GanttLegend() {
             backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',
           }}
         />
-        <span style={{ fontSize: 14, color: '#8c8c8c' }}>Setup</span>
+        <span style={{ fontSize: 13, color: '#8c8c8c' }}>Setup</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ width: 18, height: 3, backgroundColor: '#385E9D', borderRadius: 2 }} />
-        <span style={{ fontSize: 14, color: '#8c8c8c' }}>Hoje</span>
+        <span style={{ fontSize: 13, color: '#8c8c8c' }}>Hoje</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ width: 3, height: 14, backgroundColor: 'rgba(0,0,0,0.25)' }} />
-        <span style={{ fontSize: 14, color: '#8c8c8c' }}>Deadline</span>
+        <span style={{ fontSize: 13, color: '#8c8c8c' }}>Deadline</span>
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ const ActionButtons = ({
                 <Tooltip title="Visualizar">
                     <Button
                         type="text"
-                        icon={<AiFillEye style={{ fontSize: '14px' }} />}
+                        icon={<AiFillEye style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onView}
                         style={{ padding: '4px 8px' }}
@@ -48,7 +48,7 @@ const ActionButtons = ({
                 <Tooltip title="Editar">
                     <Button
                         type="text"
-                        icon={<AiFillEdit style={{ fontSize: '14px' }} />}
+                        icon={<AiFillEdit style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onEdit}
                         style={{ padding: '4px 8px' }}
@@ -59,7 +59,7 @@ const ActionButtons = ({
                 <Tooltip title="Copiar">
                     <Button
                         type="text"
-                        icon={<AiOutlineCopy style={{ fontSize: '14px' }} />}
+                        icon={<AiOutlineCopy style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onCopy}
                         style={{ padding: '4px 8px' }}
@@ -70,7 +70,7 @@ const ActionButtons = ({
                 <Tooltip title="Desativar">
                     <Button
                         type="text"
-                        icon={<AiOutlinePoweroff style={{ fontSize: '14px' }} />}
+                        icon={<AiOutlinePoweroff style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onDeactivate}
                         style={{ padding: '4px 8px' }}
@@ -81,7 +81,7 @@ const ActionButtons = ({
                 <Tooltip title="Ativar">
                     <Button
                         type="text"
-                        icon={<AiOutlinePoweroff style={{ fontSize: '14px', color: '#52c41a' }} />}
+                        icon={<AiOutlinePoweroff style={{ fontSize: '13px', color: '#52c41a' }} />}
                         size={size}
                         onClick={onActivate}
                         style={{ padding: '4px 8px' }}
@@ -93,7 +93,7 @@ const ActionButtons = ({
                     <Button
                         type="text"
                         danger
-                        icon={<AiFillDelete style={{ fontSize: '14px' }} />}
+                        icon={<AiFillDelete style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onDelete}
                         style={{ padding: '4px 8px' }}
@@ -104,7 +104,7 @@ const ActionButtons = ({
                 <Tooltip title="Exportar">
                     <Button
                         type="text"
-                        icon={<AiOutlineDownload style={{ fontSize: '14px' }} />}
+                        icon={<AiOutlineDownload style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onExport}
                         style={{ padding: '4px 8px' }}
@@ -115,7 +115,7 @@ const ActionButtons = ({
                 <Tooltip title="Imprimir">
                     <Button
                         type="text"
-                        icon={<AiOutlinePrinter style={{ fontSize: '14px' }} />}
+                        icon={<AiOutlinePrinter style={{ fontSize: '13px' }} />}
                         size={size}
                         onClick={onPrint}
                         style={{ padding: '4px 8px' }}

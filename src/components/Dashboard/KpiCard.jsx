@@ -43,7 +43,7 @@ const KpiCard = memo(({ title, value, icon: Icon, subtitle, variant = 'default',
       {(subtitle || trend) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
           {subtitle && (
-            <Text type="secondary" style={{ fontSize: 12 }}>
+            <Text type="secondary" style={{ fontSize: 11 }}>
               {subtitle}
             </Text>
           )}

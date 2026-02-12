@@ -24,7 +24,7 @@ const UserProfile = ({ userName, userRole, appVersion = '1.0.0' }) => {
     };
 
     return (
-        <div style={{ padding: '16px', width: '280px' }}>
+        <div style={{ padding: '14px', width: '280px' }}>
             <Space direction="vertical" align="center" style={{ width: '100%' }}>
                 <Avatar size={64} icon={<UserOutlined />} />
                 <Title level={4} style={{ margin: 0 }}>{userName}</Title>
@@ -139,7 +139,7 @@ const AuthorizedLayout = ({ children, userName }) => {
                 style={{
                     flexShrink: 0,
                     backgroundColor: colors.layout.headerBg,
-                    padding: '0 16px',
+                    padding: '0 14px',
                     borderBottom: `1px solid ${colors.layout.headerBorder}`,
                     height: 60,
                     display: 'flex',
@@ -152,17 +152,17 @@ const AuthorizedLayout = ({ children, userName }) => {
                         style={{
                             background: colors.layout.siderBg,
                             height: 64,
-                            padding: '0 16px',
+                            padding: '0 14px',
                             boxSizing: 'border-box',
                             borderRight: `1px solid ${colors.white}`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: collapsed ? 'center' : 'flex-start',
-                            gap: 12,
+                            gap: 10,
                             flexShrink: 0,
                         }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginRight: 33 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 28 }}>
                             <div
                                 style={{
                                     width: 40,
@@ -175,12 +175,12 @@ const AuthorizedLayout = ({ children, userName }) => {
                                     flexShrink: 0,
                                 }}
                             >
-                                <AppstoreOutlined style={{ fontSize: 22, color: colors.layout.siderText }} />
+                                <AppstoreOutlined style={{ fontSize: 20, color: colors.layout.siderText }} />
                             </div>
                             {!collapsed && (
                                 <div style={{ minWidth: 0 }}>
-                                    <div style={{ color: colors.layout.siderText, fontSize: 18, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
-                                    <div style={{ color: colors.layout.siderTextMuted, fontSize: 12, lineHeight: 1.3 }}>Sequenciamento</div>
+                                    <div style={{ color: colors.layout.siderText, fontSize: 17, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
+                                    <div style={{ color: colors.layout.siderTextMuted, fontSize: 11, lineHeight: 1.3 }}>Sequenciamento</div>
                                 </div>
                             )}
                         </div>
@@ -190,7 +190,7 @@ const AuthorizedLayout = ({ children, userName }) => {
                 <Space size="middle" align="center" style={{ borderLeft: `0.5px solid ${colors.white}` }}>
                     <Button
                         type="text"
-                        icon={<NotificationOutlined style={{ fontSize: 18, color: colors.layout.headerText }} />}
+                        icon={<NotificationOutlined style={{ fontSize: 17, color: colors.layout.headerText }} />}
                         style={{
                             color: colors.layout.headerText,
                             width: 40,
@@ -208,7 +208,7 @@ const AuthorizedLayout = ({ children, userName }) => {
                                 borderRadius: '8px',
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                                 overflow: 'hidden',
-                                margin: '-12px -16px'
+                                margin: '-10px -14px'
                             }}>
                                 <UserProfile userName={'Teste'} userRole={'Admin'} appVersion={'1.0.0'} />
                             </div>
@@ -223,13 +223,13 @@ const AuthorizedLayout = ({ children, userName }) => {
                                 cursor: 'pointer',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 8,
-                                height: 32,
-                                minHeight: 32,
+                                gap: 6,
+                                height: 28,
+                                minHeight: 28,
                             }}
                         >
                             <Avatar size={32} icon={<UserOutlined />} style={{ backgroundColor: 'rgba(255,255,255,0.25)', color: colors.layout.headerText, flexShrink: 0 }} />
-                            <Text style={{ color: colors.layout.headerText, fontWeight: 500, lineHeight: '32px', height: 32, margin: 0, display: 'block' }}>Admin</Text>
+                            <Text style={{ color: colors.layout.headerText, fontWeight: 500, lineHeight: '28px', height: 28, margin: 0, display: 'block' }}>Admin</Text>
                         </a>
                     </Popover>
                 </Space>
@@ -254,7 +254,7 @@ const AuthorizedLayout = ({ children, userName }) => {
                     {sidebarMenu}
                 </Sider>
 
-                <Content style={{ padding: '20px', margin: 0, minHeight: 280, minWidth: 0, overflow: 'auto' }}>
+                <Content style={{ padding: '18px', margin: 0, minHeight: 280, minWidth: 0, overflow: 'auto' }}>
                     <main role="main">{children}</main>
                 </Content>
             </Layout>

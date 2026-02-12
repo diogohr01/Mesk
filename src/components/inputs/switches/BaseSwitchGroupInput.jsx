@@ -48,7 +48,7 @@ const BaseSwitchGroupInput = ({
         return (
             <Space key={switchConfig.id} direction="vertical" size="small" style={{ width: '100%' }}>
                 {switchConfig.label && (
-                    <Text strong style={{ fontSize: '14px' }}>
+                    <Text strong style={{ fontSize: '13px' }}>
                         {switchConfig.label}
                     </Text>
                 )}
@@ -63,7 +63,7 @@ const BaseSwitchGroupInput = ({
                 />
                 
                 {switchConfig.description && (
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                    <Text type="secondary" style={{ fontSize: '11px' }}>
                         <InfoCircleOutlined style={{ marginRight: 4 }} />
                         {switchConfig.description}
                     </Text>

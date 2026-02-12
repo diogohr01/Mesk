@@ -276,11 +276,11 @@ const GanttProducao = () => {
             }}
           >
             <div>
-              <Typography.Title level={4} style={{ margin: 0, color: colors.text.primary, fontSize: 20 }}>
+              <Typography.Title level={4} style={{ margin: 0, color: colors.text.primary, fontSize: 17 }}>
                 Gantt de Produção
               </Typography.Title>
               {!isFullscreen && (
-                <Typography.Text type="secondary" style={{ fontSize: 14 }}>
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                   Arraste as OPs para re-sequenciar • Clique para editar
                 </Typography.Text>
               )}
@@ -294,7 +294,7 @@ const GanttProducao = () => {
                     type={Math.abs(zoomScale - p.value) < 0.05 ? 'primary' : 'default'}
                     size="middle"
                     onClick={() => setZoomScale(p.value)}
-                    style={{ fontSize: 13, fontFamily: 'monospace', padding: '4px 10px' }}
+                    style={{ fontSize: 12, fontFamily: 'monospace', padding: '4px 10px' }}
                   >
                     {p.label}
                   </Button>
@@ -302,7 +302,7 @@ const GanttProducao = () => {
               </Space>
               <Button
                 size="middle"
-                icon={isFullscreen ? <FullscreenExitOutlined style={{ fontSize: 16 }} /> : <FullscreenOutlined style={{ fontSize: 16 }} />}
+                icon={isFullscreen ? <FullscreenExitOutlined style={{ fontSize: 15 }} /> : <FullscreenOutlined style={{ fontSize: 15 }} />}
                 onClick={() => setIsFullscreen(!isFullscreen)}
                 title={isFullscreen ? 'Sair do fullscreen' : 'Tela cheia'}
                 style={{ padding: '4px 12px' }}
@@ -320,9 +320,9 @@ const GanttProducao = () => {
                   <Button
                     key={z.key}
                     type={zoom === z.key ? 'primary' : 'default'}
-                    icon={<Icon style={{ fontSize: 18 }} />}
+                    icon={<Icon style={{ fontSize: 17 }} />}
                     onClick={() => setZoom(z.key)}
-                    style={{ padding: '4px 14px', fontSize: 14 }}
+                    style={{ padding: '4px 14px', fontSize: 12 }}
                   >
                     {z.label}
                   </Button>
@@ -332,36 +332,36 @@ const GanttProducao = () => {
             <Button
               size="middle"
               type={showSetups ? 'default' : 'text'}
-              icon={<ToolOutlined style={{ fontSize: 16 }} />}
+              icon={<ToolOutlined style={{ fontSize: 15 }} />}
               onClick={() => setShowSetups(!showSetups)}
-              style={{ padding: '4px 14px', fontSize: 14 }}
+              style={{ padding: '4px 14px', fontSize: 12 }}
             >
               Setups
             </Button>
             <Button
               size="middle"
               type={showExcecoes ? 'default' : 'text'}
-              icon={<WarningOutlined style={{ fontSize: 16 }} />}
+              icon={<WarningOutlined style={{ fontSize: 15 }} />}
               onClick={() => setShowExcecoes(!showExcecoes)}
-              style={{ padding: '4px 14px', fontSize: 14 }}
+              style={{ padding: '4px 14px', fontSize: 12 }}
             >
               Exceções
             </Button>
             <Button
               size="middle"
               type={onlyConfirmadas ? 'primary' : 'default'}
-              icon={onlyConfirmadas ? <EyeOutlined style={{ fontSize: 16 }} /> : <EyeInvisibleOutlined style={{ fontSize: 16 }} />}
+              icon={onlyConfirmadas ? <EyeOutlined style={{ fontSize: 15 }} /> : <EyeInvisibleOutlined style={{ fontSize: 15 }} />}
               onClick={() => setOnlyConfirmadas(!onlyConfirmadas)}
-              style={{ padding: '4px 14px', fontSize: 14 }}
+              style={{ padding: '4px 14px', fontSize: 12 }}
             >
               Só Confirmadas
             </Button>
             <Space.Compact size="middle">
-              <FilterOutlined style={{ color: colors.text.secondary, fontSize: 18, marginRight: 4 }} />
+              <FilterOutlined style={{ color: colors.text.secondary, fontSize: 17, marginRight: 4 }} />
               <Select
                 value={recursoFilter}
                 onChange={setRecursoFilter}
-                style={{ width: 200, fontSize: 14 }}
+                style={{ width: 200, fontSize: 12 }}
                 size="middle"
                 options={[
                   { value: 'todos', label: 'Todos os recursos' },
@@ -378,7 +378,7 @@ const GanttProducao = () => {
                 size="middle"
                 type={statusFilter === s ? 'primary' : 'default'}
                 onClick={() => setStatusFilter(s)}
-                style={{ padding: '4px 14px', fontSize: 14 }}
+                style={{ padding: '4px 14px', fontSize: 12 }}
               >
                 {s === 'todos' ? 'Todos' : statusLabels[s] || s}
               </Button>

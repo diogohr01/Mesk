@@ -136,10 +136,10 @@ const KanbanProducao = () => {
                           justifyContent: 'space-between',
                         }}
                       >
-                        <Text strong style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.text.primary }}>
+                        <Text strong style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em', color: colors.text.primary }}>
                           {statusLabels[status]}
                         </Text>
-                        <span style={{ fontSize: 12, fontFamily: 'monospace', fontWeight: 600, color: colors.text.secondary, background: '#f0f0f0', padding: '2px 8px', borderRadius: 4 }}>
+                        <span style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 600, color: colors.text.secondary, background: '#f0f0f0', padding: '2px 8px', borderRadius: 4 }}>
                           {colOps.length}
                         </span>
                       </div>
@@ -165,7 +165,7 @@ const KanbanProducao = () => {
                               justifyContent: 'center',
                             }}
                           >
-                            <Text type="secondary" style={{ fontSize: 12 }}>Soltar aqui</Text>
+                            <Text type="secondary" style={{ fontSize: 11 }}>Soltar aqui</Text>
                           </div>
                         )}
                       </div>
@@ -208,25 +208,25 @@ function KanbanCard({ op, index, isDragging, onDragStart, onDragEnd }) {
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <HolderOutlined style={{ fontSize: 14, color: colors.text.secondary }} />
-          <Text strong style={{ fontSize: 12, fontFamily: 'monospace' }}>{op.codigo || '-'}</Text>
+          <HolderOutlined style={{ fontSize: 13, color: colors.text.secondary }} />
+          <Text strong style={{ fontSize: 11, fontFamily: 'monospace' }}>{op.codigo || '-'}</Text>
         </div>
         <ScoreBadge score={op.score ?? 0} size="sm" />
       </div>
-      <Text ellipsis style={{ fontSize: 12, lineHeight: 1.3, color: colors.text.primary }}>
+      <Text ellipsis style={{ fontSize: 11, lineHeight: 1.3, color: colors.text.primary }}>
         {op.produto || '-'}
       </Text>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text type="secondary" style={{ fontSize: 10 }}>{op.cliente || '-'}</Text>
+        <Text type="secondary" style={{ fontSize: 9 }}>{op.cliente || '-'}</Text>
        
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-        <Text type="secondary" style={{ fontSize: 10 }}>Liga {op.liga || '-'}</Text>
-        <Text type="secondary" style={{ fontSize: 10 }}>•</Text>
-        <Text type="secondary" style={{ fontSize: 10 }}>{op.tempera || '-'}</Text>
+        <Text type="secondary" style={{ fontSize: 9 }}>Liga {op.liga || '-'}</Text>
+        <Text type="secondary" style={{ fontSize: 9 }}>•</Text>
+        <Text type="secondary" style={{ fontSize: 9 }}>{op.tempera || '-'}</Text>
         <Text
           style={{
-            fontSize: 10,
+            fontSize: 9,
             fontFamily: 'monospace',
             color: isLate ? '#ff4d4f' : colors.text.secondary,
             fontWeight: isLate ? 600 : 400,

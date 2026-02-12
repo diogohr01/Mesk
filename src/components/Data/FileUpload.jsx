@@ -234,14 +234,14 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                         transition: 'all 0.3s ease'
                     }}>
                         <UploadOutlined style={{ 
-                            fontSize: "28px", 
+                            fontSize: "26px", 
                             color: 'white'
                         }} />
                     </div>
                     <div>
                         <p style={{ 
                             margin: 0, 
-                            fontSize: '16px', 
+                            fontSize: '15px', 
                             fontWeight: '500',
                             color: isDragActive ? '#1890ff' : '#262626'
                         }}>
@@ -249,7 +249,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                 </p>
                         <p style={{ 
                             margin: '8px 0 0 0', 
-                            fontSize: '14px', 
+                            fontSize: '13px', 
                             color: '#8c8c8c'
                         }}>
                             {inputType === "images" ? "Suporta apenas imagens (JPG, PNG, GIF)" : "Suporta todos os tipos de arquivo"}
@@ -316,7 +316,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                             color: 'white',
                                             padding: '2px 6px',
                                             borderRadius: '4px',
-                                            fontSize: '10px',
+                                            fontSize: '9px',
                                             fontWeight: '600',
                                             textTransform: 'uppercase'
                                         }}>
@@ -349,7 +349,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                             e.currentTarget.style.color = '#1890ff';
                                         }}
                                         >
-                                            <AiFillEye style={{ fontSize: '12px', color: '#1890ff' }} />
+                                            <AiFillEye style={{ fontSize: '11px', color: '#1890ff' }} />
                                         </div>
                                     </div>
                                 ) : (
@@ -369,12 +369,12 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                             margin: '0 auto 12px auto'
                                         }}>
                                             <FileOutlined style={{ 
-                                                fontSize: '20px', 
+                                                fontSize: '18px', 
                                                 color: '#3b82f6'
                                             }} />
                                         </div>
                                         <div style={{
-                                            fontSize: '12px',
+                                            fontSize: '9px',
                                             color: '#475569',
                                             fontWeight: '500',
                                             wordBreak: 'break-word',
@@ -397,7 +397,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                         alignItems: 'center' 
                                     }}>
                                         <div style={{ 
-                                            fontSize: '11px', 
+                                            fontSize: '9px', 
                                             color: '#64748b',
                                             fontWeight: '500'
                                         }}>
@@ -415,7 +415,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                                     boxShadow: 'none',
                                                     padding: '2px 6px',
                                                     height: 'auto',
-                                                    fontSize: '11px'
+                                                    fontSize: '9px'
                                                 }}
                                             >
                                                 Ver
@@ -431,7 +431,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                                                     boxShadow: 'none',
                                                     padding: '2px 6px',
                                                     height: 'auto',
-                                                    fontSize: '11px'
+                                                    fontSize: '9px'
                                                 }}
                                             >
                                                 Remover
@@ -482,7 +482,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                             padding: '12px', 
                             backgroundColor: '#f5f5f5', 
                             borderRadius: '6px',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             color: '#666'
                         }}>
                             <strong>Nome:</strong> {currentPreview.name}
@@ -491,7 +491,7 @@ const DropzoneComponent = ({ onFileUpload, preFilesIds = [], inputType = "images
                 ) : (
                     currentPreview && (
                         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                            <FileOutlined style={{ fontSize: '64px', color: '#8c8c8c', marginBottom: '16px' }} />
+                            <FileOutlined style={{ fontSize: '58px', color: '#8c8c8c', marginBottom: '16px' }} />
                             <h3 style={{ marginBottom: '16px' }}>{currentPreview.name}</h3>
                             <Button 
                                 type="primary" 

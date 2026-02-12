@@ -200,7 +200,7 @@ const FilaProducao = () => {
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                 {/* Divisão de Capacidade */}
                 <div style={{ padding: '12px 16px', background: '#fafafa', border: '1px solid #f0f0f0', borderRadius: 8 }}>
-                  <Text strong style={{ fontSize: 13, display: 'block', marginBottom: 12 }}>Divisão de Capacidade</Text>
+                  <Text strong style={{ fontSize: 11, display: 'block', marginBottom: 12 }}>Divisão de Capacidade</Text>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
                     <Space wrap>
                       {['todos', 'casa', 'cliente'].map((f) => (
@@ -219,8 +219,8 @@ const FilaProducao = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 100 }}>
                       <HomeOutlined style={{ color: colors.primary }} />
-                      <Text strong style={{ fontSize: 13 }}>{casaPct}%</Text>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Casa</Text>
+                      <Text strong style={{ fontSize: 11 }}>{casaPct}%</Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>Casa</Text>
                     </div>
                     <Slider
                       min={0}
@@ -231,8 +231,8 @@ const FilaProducao = () => {
                       style={{ flex: 1, margin: 0 }}
                     />
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 100, justifyContent: 'flex-end' }}>
-                      <Text type="secondary" style={{ fontSize: 12 }}>Cliente</Text>
-                      <Text strong style={{ fontSize: 13, color: '#385E9D' }}>{100 - casaPct}%</Text>
+                      <Text type="secondary" style={{ fontSize: 11 }}>Cliente</Text>
+                      <Text strong style={{ fontSize: 11, color: '#385E9D' }}>{100 - casaPct}%</Text>
                       <TeamOutlined style={{ color: '#385E9D' }} />
                     </div>
                   </div>
@@ -243,7 +243,7 @@ const FilaProducao = () => {
                           <div style={{ width: `${casaReal}%`, height: '100%', background: colors.primary, transition: 'width 0.2s' }} />
                           <div style={{ width: `${clienteReal}%`, height: '100%', background: '#385E9D', transition: 'width 0.2s' }} />
                         </div>
-                        <Text type="secondary" style={{ fontSize: 11, whiteSpace: 'nowrap' }}>
+                        <Text type="secondary" style={{ fontSize: 10, whiteSpace: 'nowrap' }}>
                           Real: {casaReal}% / {clienteReal}%
                         </Text>
                       </div>
@@ -260,7 +260,7 @@ const FilaProducao = () => {
                 </div>
 
                 <div>
-                  <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
+                  <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 8 }}>
                     Cenário de priorização
                   </Text>
                   {loadingCenarios ? (
@@ -276,8 +276,8 @@ const FilaProducao = () => {
                           onClick={() => setCenarioAtivo(c.id)}
                           style={{ textAlign: 'left', height: 'auto', padding: '8px 12px' }}
                         >
-                          <div style={{ fontWeight: 600, fontSize: 13 }}>{c.nome}</div>
-                          <div style={{ fontSize: 11, opacity: 0.85 }}>{c.descricao || ''}</div>
+                          <div style={{ fontWeight: 600, fontSize: 11 }}>{c.nome}</div>
+                          <div style={{ fontSize: 10, opacity: 0.85 }}>{c.descricao || ''}</div>
                         </Button>
                       ))}
                     </Space>
@@ -288,7 +288,7 @@ const FilaProducao = () => {
                   <div style={{ padding: '12px 16px', background: '#fafafa', border: '1px solid #f0f0f0', borderRadius: 8 }}>
                     <Space align="center" style={{ marginBottom: 8 }}>
                       <InfoCircleOutlined style={{ color: colors.text.secondary }} />
-                      <Text type="secondary" style={{ fontSize: 12, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <Text type="secondary" style={{ fontSize: 11, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         Pesos do cenário: {cenarioSelecionado.nome}
                       </Text>
                     </Space>
@@ -296,9 +296,9 @@ const FilaProducao = () => {
                       {(cenarioSelecionado.criterios || []).map((cr) => (
                         <Col key={cr.id} xs={24} sm={12} md={8} lg={6}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Text type="secondary" style={{ fontSize: 12, minWidth: 90 }}>{cr.label}</Text>
+                            <Text type="secondary" style={{ fontSize: 11, minWidth: 90 }}>{cr.label}</Text>
                             <Progress percent={cr.value ?? 0} size="small" showInfo={false} style={{ flex: 1, marginBottom: 0 }} />
-                            <Text style={{ fontSize: 12, fontFamily: 'monospace', width: 32 }}>{cr.value ?? 0}%</Text>
+                            <Text style={{ fontSize: 11, fontFamily: 'monospace', width: 32 }}>{cr.value ?? 0}%</Text>
                           </div>
                         </Col>
                       ))}

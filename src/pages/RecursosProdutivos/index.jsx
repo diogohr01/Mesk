@@ -36,7 +36,7 @@ const RecursosProdutivos = () => {
         <h2
           style={{
             margin: 0,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 600,
             color: colors.text.primary,
             display: 'flex',
@@ -47,7 +47,7 @@ const RecursosProdutivos = () => {
           <ToolOutlined style={{ color: colors.primary }} />
           Recursos Produtivos
         </h2>
-        <Text type="secondary" style={{ fontSize: 14 }}>
+        <Text type="secondary" style={{ fontSize: 12 }}>
           Máquinas, matrizes e linhas de produção
         </Text>
       </div>
@@ -72,12 +72,12 @@ function RecursoCard({ recurso }) {
 
   const statusNode =
     recurso.status === 'operando' ? (
-      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#52c41a', fontSize: 12, fontWeight: 500 }}>
+      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#52c41a', fontSize: 10, fontWeight: 500 }}>
         <CheckCircleOutlined />
         Operando
       </span>
     ) : (
-      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#ff4d4f', fontSize: 12, fontWeight: 500 }}>
+      <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#ff4d4f', fontSize: 10, fontWeight: 500 }}>
         <ToolOutlined />
         Manutenção
       </span>
@@ -96,14 +96,14 @@ function RecursoCard({ recurso }) {
           : {}
       }
     >
-      <Text type="secondary" style={{ display: 'block', fontSize: 13, marginBottom: 8 }}>
+      <Text type="secondary" style={{ display: 'block', fontSize: 12, marginBottom: 8 }}>
         {recurso.tipo}
       </Text>
       <Text
         type="secondary"
         style={{
           display: 'block',
-          fontSize: 11,
+          fontSize: 10,
           textTransform: 'uppercase',
           letterSpacing: '0.05em',
           marginBottom: 4,
@@ -111,7 +111,7 @@ function RecursoCard({ recurso }) {
       >
         CAPACIDADE
       </Text>
-      <Text strong style={{ fontSize: 16 }}>
+      <Text strong style={{ fontSize: 15 }}>
         {capacidadeStr}
       </Text>
     </Card>

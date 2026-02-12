@@ -14,7 +14,7 @@ const inputStyles = {
   background: 'transparent',
   border: 'none',
   color: colors.white,
-  fontSize: 14,
+  fontSize: 13,
 };
 
 /**
@@ -25,7 +25,7 @@ function HeaderSearchInput({ placeholder = 'Pesquisar', onSearch, value, onChang
     <Input
       className="header-search-input"
       placeholder={placeholder}
-      prefix={<SearchOutlined style={{ color: colors.layout.headerText, fontSize: 14, marginRight: 7 }} />}
+      prefix={<SearchOutlined style={{ color: colors.layout.headerText, fontSize: 13, marginRight: 7 }} />}
       onPressEnter={(e) => onSearch?.(e.target?.value)}
       value={value}
       onChange={onChange}

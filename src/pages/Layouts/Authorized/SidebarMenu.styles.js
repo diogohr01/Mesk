@@ -13,19 +13,19 @@ export const StyledSidebarMenu = styled(Menu)`
 
   &.ant-menu-inline .ant-menu-item,
   &.ant-menu-inline .ant-menu-submenu-title {
-    padding-left: 12px !important;
+    padding-left: 10px !important;
     color: ${colors.text.primary} !important;
   }
 
   &.ant-menu-inline .ant-menu-item .ant-menu-item-icon,
   &.ant-menu-inline .ant-menu-submenu-title .ant-menu-item-icon {
-    margin-right: 8px;
+    margin-right: 6px;
   }
 
   /* Fallback quando o ícone é custom (ex.: GradientizeIcon) e não usa .ant-menu-item-icon */
   &.ant-menu-inline .ant-menu-item > span:first-of-type,
   &.ant-menu-inline .ant-menu-submenu-title > span:first-of-type {
-    margin-right: 8px;
+    margin-right: 6px;
   }
 
   &.ant-menu-inline .ant-menu-item .anticon,
@@ -45,7 +45,7 @@ export const StyledSidebarMenu = styled(Menu)`
   }
 
   &.ant-menu-inline .ant-menu-sub .ant-menu-item {
-    padding-left: 24px !important;
+    padding-left: 22px !important;
   }
 
   &.ant-menu .ant-menu-item-selected {

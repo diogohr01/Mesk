@@ -218,7 +218,7 @@ const AddEdit = ({ editingRecord, onCancel, onSave }) => {
             >
               {loading ? <Loading /> : (
                 <div style={{ padding: '16px 0' }}>
-                  <p style={{ margin: '16px 0', color: '#8c8c8c', fontSize: '14px' }}>
+                  <p style={{ margin: '16px 0', color: '#8c8c8c', fontSize: '13px' }}>
                     Modo: {editingRecord ? 'Editando registro ID: ' + editingRecord.id : 'Novo registro'}
                   </p>
                   <DynamicForm formConfig={formConfig} formInstance={form} onSubmit={handleSave} onClose={onCancel} />

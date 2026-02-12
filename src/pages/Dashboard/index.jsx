@@ -113,7 +113,7 @@ const Dashboard = () => {
         <Title level={4} style={{ margin: 0, color: colors.text.primary }}>
           Dashboard do Planejador
         </Title>
-        <Text type="secondary" style={{ fontSize: 14 }}>
+        <Text type="secondary" style={{ fontSize: 13 }}>
           Visão geral do sequenciamento de produção
         </Text>
       </div>
@@ -176,7 +176,7 @@ const Dashboard = () => {
               header={
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Title level={5} style={{ margin: 0 }}>Fila Prioritária</Title>
-                  <Link to="/ordem-producao/cadastro" style={{ fontSize: 12, color: colors.primary }}>
+                  <Link to="/ordem-producao/cadastro" style={{ fontSize: 9, color: colors.primary }}>
                     Ver tudo →
                   </Link>
                 </div>
@@ -200,14 +200,14 @@ const Dashboard = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                      <Text type="secondary" style={{ width: 20, fontFamily: 'monospace', fontSize: 12 }}>
+                      <Text type="secondary" style={{ width: 20, fontFamily: 'monospace', fontSize: 9 }}>
                         {i + 1}
                       </Text>
                       <div>
-                        <Text strong style={{ display: 'block', fontSize: 14 }}>
+                        <Text strong style={{ display: 'block', fontSize: 13 }}>
                           {op.codigo}
                         </Text>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
+                        <Text type="secondary" style={{ fontSize: 9 }}>
                           {op.produto} • {op.cliente}
                         </Text>
                       </div>
@@ -238,7 +238,7 @@ const Dashboard = () => {
                     <BellOutlined style={{ color: colors.primary }} />
                     Alertas
                     {alertasUrgentesCount > 0 && (
-                      <Tag color="error" style={{ fontSize: 10, lineHeight: '16px', padding: '0px' }}>
+                      <Tag color="error" style={{ fontSize: 9, lineHeight: '16px', padding: '0px' }}>
                         {alertasUrgentesCount}
                       </Tag>
                     )}
@@ -261,8 +261,8 @@ const Dashboard = () => {
                       transition: 'background-color 0.2s',
                     }}
                   >
-                    <Text style={{ fontSize: 12, display: 'block', lineHeight: 1.5 }}>{alerta.msg}</Text>
-                    <Text type="secondary" style={{ fontSize: 10, marginTop: 4, display: 'block' }}>{alerta.tempo} atrás</Text>
+                    <Text style={{ fontSize: 9, display: 'block', lineHeight: 1.5 }}>{alerta.msg}</Text>
+                    <Text type="secondary" style={{ fontSize: 9, marginTop: 4, display: 'block' }}>{alerta.tempo} atrás</Text>
                   </div>
                 ))}
               </div>
@@ -291,9 +291,9 @@ const Dashboard = () => {
             >
               <div style={{ padding: '8px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <Text style={{ fontSize: 24, fontWeight: 700, fontFamily: 'monospace' }}>
+                  <Text style={{ fontSize: 22, fontWeight: 700, fontFamily: 'monospace' }}>
                     {programadoHoje.toFixed(1)}{' '}
-                    <Text type="secondary" style={{ fontSize: 14, fontWeight: 400 }}>/ {CAPACIDADE_TOTAL} ton</Text>
+                    <Text type="secondary" style={{ fontSize: 13, fontWeight: 400 }}>/ {CAPACIDADE_TOTAL} ton</Text>
                   </Text>
                   <Tag
                     color={
@@ -330,7 +330,7 @@ const Dashboard = () => {
                     }}
                   />
                 </div>
-                <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 12 }}>
+                <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 9 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span style={{ width: 12, height: 8, borderRadius: 2, background: colors.primary }} />
                     <Text type="secondary">Casa: {casaHoje.toFixed(1)} ton</Text>
@@ -357,7 +357,7 @@ const Dashboard = () => {
               header={
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Title level={5} style={{ margin: 0 }}>Status dos Recursos</Title>
-                  <Link to="/recursos-produtivos" style={{ fontSize: 12, color: colors.primary }}>
+                  <Link to="/recursos-produtivos" style={{ fontSize: 9, color: colors.primary }}>
                     Gerenciar →
                   </Link>
                 </div>
@@ -368,10 +368,10 @@ const Dashboard = () => {
                 {recursos.map((r) => (
                   <div key={r.nome} style={{ marginBottom: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                      <Text style={{ fontSize: 14 }}>{r.nome}</Text>
+                      <Text style={{ fontSize: 13 }}>{r.nome}</Text>
                       <Text
                         style={{
-                          fontSize: 12,
+                          fontSize: 9,
                           fontWeight: 500,
                           color: r.status === 'operando' ? '#52c41a' : '#ff4d4f',
                         }}
@@ -401,7 +401,7 @@ const Dashboard = () => {
                   strong
                   style={{
                     display: 'block',
-                    fontSize: 11,
+                    fontSize: 9,
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     color: colors.text.secondary,
@@ -425,10 +425,10 @@ const Dashboard = () => {
                               flexShrink: 0,
                             }}
                           />
-                          <Text type="secondary" style={{ fontSize: 12 }}>
+                          <Text type="secondary" style={{ fontSize: 9 }}>
                             {s.label}
                           </Text>
-                          <Text strong style={{ marginLeft: 'auto', fontFamily: 'monospace', fontSize: 12 }}>
+                          <Text strong style={{ marginLeft: 'auto', fontFamily: 'monospace', fontSize: 9 }}>
                             {count}
                           </Text>
                         </div>

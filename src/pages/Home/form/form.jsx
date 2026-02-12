@@ -409,7 +409,7 @@ const FormPage = () => {
                 backgroundColor: '#f5f5f5', 
                 padding: '12px', 
                 borderRadius: '4px',
-                fontSize: '12px',
+                fontSize: '11px',
                 maxHeight: '300px',
                 overflow: 'auto'
               }}>

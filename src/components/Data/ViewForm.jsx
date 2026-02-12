@@ -264,7 +264,7 @@ const ViewForm = React.memo(({
                 return (
                     <div key={section.id || index} style={{ marginBottom: '24px' }}>
                         {section.title && (
-                            <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 16, fontSize: '16px', fontWeight: 600, color: '#262626' }}>
+                            <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 16, fontSize: '15px', fontWeight: 600, color: '#262626' }}>
                                 {section.title}
                             </h3>
                         )}
@@ -290,7 +290,7 @@ const ViewForm = React.memo(({
             return (
                 <div key={section.id || index} style={{ marginBottom: '24px' }}>
                     {section.title && (
-                        <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 16, fontSize: '16px', fontWeight: 600, color: '#262626' }}>
+                        <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 16, fontSize: '15px', fontWeight: 600, color: '#262626' }}>
                             {section.title}
                         </h3>
                     )}

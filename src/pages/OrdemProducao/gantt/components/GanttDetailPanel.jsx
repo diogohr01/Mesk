@@ -20,11 +20,11 @@ dayjs.locale('pt-br');
 function InfoRow({ icon: Icon, label, value, mono, highlight }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      {Icon && <Icon style={{ fontSize: 12, color: '#8c8c8c', flexShrink: 0 }} />}
-      <span style={{ fontSize: 10, color: '#8c8c8c', width: 72, flexShrink: 0 }}>{label}</span>
+      {Icon && <Icon style={{ fontSize: 8, color: '#8c8c8c', flexShrink: 0 }} />}
+      <span style={{ fontSize: 8, color: '#8c8c8c', width: 72, flexShrink: 0 }}>{label}</span>
       <span
         style={{
-          fontSize: 11,
+          fontSize: 8,
           color: highlight ? '#ff4d4f' : '#262626',
           fontWeight: highlight ? 700 : 400,
           overflow: 'hidden',
@@ -42,8 +42,8 @@ function InfoRow({ icon: Icon, label, value, mono, highlight }) {
 function DateField({ label, icon: Icon, date, onChange, highlight }) {
   return (
     <div style={{ marginBottom: 8 }}>
-      <label style={{ fontSize: 10, color: '#8c8c8c', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-        {Icon && <Icon style={{ fontSize: 12 }} />}
+      <label style={{ fontSize: 8, color: '#8c8c8c', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+        {Icon && <Icon style={{ fontSize: 8 }} />}
         {label}
       </label>
       <DatePicker
@@ -110,10 +110,10 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: 10, color: '#8c8c8c', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 4px 0' }}>
+          <p style={{ fontSize: 8, color: '#8c8c8c', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 4px 0' }}>
             Detalhes da OP
           </p>
-          <p style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace', color: '#262626', margin: 0 }}>
+          <p style={{ fontSize: 13, fontWeight: 700, fontFamily: 'monospace', color: '#262626', margin: 0 }}>
             {filha.codigo}
           </p>
         </div>
@@ -122,7 +122,7 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
             <Button
               type="text"
               size="small"
-              icon={<EditOutlined style={{ fontSize: 14 }} />}
+              icon={<EditOutlined style={{ fontSize: 13 }} />}
               onClick={() => setEditing(true)}
               title="Editar"
             />
@@ -130,7 +130,7 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
             <Button
               type="text"
               size="small"
-              icon={<SaveOutlined style={{ fontSize: 14, color: '#52c41a' }} />}
+              icon={<SaveOutlined style={{ fontSize: 13, color: '#52c41a' }} />}
               onClick={handleSave}
               title="Salvar"
             />
@@ -151,7 +151,7 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
         {showRisk && (
           <span
             style={{
-              fontSize: 9,
+              fontSize: 8,
               backgroundColor: 'rgba(255,77,79,0.2)',
               color: '#ff4d4f',
               padding: '2px 8px',
@@ -174,8 +174,8 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
         {editing ? (
           <>
             <div>
-              <label style={{ fontSize: 10, color: '#8c8c8c', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                <AppstoreOutlined style={{ fontSize: 12 }} /> Quantidade
+              <label style={{ fontSize: 8, color: '#8c8c8c', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <AppstoreOutlined style={{ fontSize: 8 }} /> Quantidade
               </label>
               <InputNumber
                 value={editQuantidade}
@@ -220,7 +220,7 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
       </div>
 
       <div style={{ paddingTop: 12, borderTop: '1px solid #f0f0f0' }}>
-        <p style={{ fontSize: 10, fontWeight: 600, color: '#8c8c8c', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px 0' }}>
+        <p style={{ fontSize: 8, fontWeight: 600, color: '#8c8c8c', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px 0' }}>
           Ações Rápidas
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

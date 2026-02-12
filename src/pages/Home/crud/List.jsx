@@ -151,7 +151,7 @@ const List = ({ onAdd, onEdit }) => {
           <Tooltip title="Editar">
             <Button
               type="text"
-              icon={<AiFillEdit style={{ fontSize: '14px' }} />}
+              icon={<AiFillEdit style={{ fontSize: '13px' }} />}
               size="small"
               onClick={() => handleEdit(record)}
               disabled={loading}
@@ -162,7 +162,7 @@ const List = ({ onAdd, onEdit }) => {
             <Button
               type="text"
               danger
-              icon={<AiFillDelete style={{ fontSize: '14px' }} />}
+              icon={<AiFillDelete style={{ fontSize: '13px' }} />}
               size="small"
               onClick={() => handleDelete(record)}
               disabled={loading}

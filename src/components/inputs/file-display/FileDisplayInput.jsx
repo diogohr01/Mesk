@@ -72,7 +72,7 @@ const FileDisplayInput = ({
         <div style={{ flex: 1, ...areaMerge }}>
           {value ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <FileImageOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+              <FileImageOutlined style={{ fontSize: 22, color: '#1890ff' }} />
               <Typography.Text>{displayText}</Typography.Text>
             </div>
           ) : (
@@ -119,9 +119,9 @@ const FileDisplayInput = ({
         disabled={disabled}
       />
       <div style={boxMerge}>
-        <FilePdfOutlined style={{ fontSize: 28, color: value ? '#1890ff' : '#bfbfbf' }} />
+        <FilePdfOutlined style={{ fontSize: 26, color: value ? '#1890ff' : '#bfbfbf' }} />
         <div style={fileNameStyle}>
-          <Typography.Text type="secondary" style={{ fontSize: 11 }}>
+          <Typography.Text type="secondary" style={{ fontSize: 10 }}>
             {displayText}
           </Typography.Text>
         </div>

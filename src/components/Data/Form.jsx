@@ -443,7 +443,7 @@ const DynamicForm = React.memo(({
                 return (
                     <div key={section.id || index}>
                         {section.title && (
-                            <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 5 }}>{section.title}</h3>
+                            <h3 style={{ marginTop: index > 0 ? 22 : 0, marginBottom: 4 }}>{section.title}</h3>
                         )}
                         <Row gutter={24}>
                             <Col span={12}>{renderQuestions(section.leftQuestions, 1)}</Col>
@@ -451,7 +451,7 @@ const DynamicForm = React.memo(({
                                 <div style={section.rightWrapperStyle} className={section.rightWrapperClassName}>
                                     {renderQuestions(section.rightQuestions, 1)}
                                     {rightQuestionsRow.length > 0 && (
-                                    <Row gutter={16} align="top" style={{ marginTop: 16 }}>
+                                    <Row gutter={16} align="top" style={{ marginTop: 14 }}>
                                         <Col span={12} style={{ minHeight: 120, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                             {renderQuestions(rightQuestionsRow.slice(0, 1), 1)}
                                         </Col>
@@ -469,7 +469,7 @@ const DynamicForm = React.memo(({
             return (
                 <div key={section.id || index}>
                     {section.title && (
-                        <h3 style={{ marginTop: index > 0 ? 25 : 0, marginBottom: 5 }}>{section.title}</h3>
+                        <h3 style={{ marginTop: index > 0 ? 22 : 0, marginBottom: 4 }}>{section.title}</h3>
                     )}
                     {renderQuestions(section.questions, section.columns)}
                 </div>

@@ -60,18 +60,18 @@ const Card = memo(({
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {icon && <span style={{ color: colors.primary }}>{icon}</span>}
           {typeof title === 'string' ? (
-            <span style={{ fontSize: 18, fontWeight: 600, color: colors.text.primary }}>{title}</span>
+            <span style={{ fontSize: 17, fontWeight: 600, color: colors.text.primary }}>{title}</span>
           ) : (
             title
           )}
         </div>
         {(subtitle != null && subtitle !== '') && (
-          <Text type="secondary" style={{ fontSize: 12 }}>
+          <Text type="secondary" style={{ fontSize: 11 }}>
             {subtitle}
           </Text>
         )}
         {(description != null && description !== '' && subtitle == null) && (
-          <Text type="secondary" style={{ fontSize: 12 }}>
+          <Text type="secondary" style={{ fontSize: 11 }}>
             {description}
           </Text>
         )}

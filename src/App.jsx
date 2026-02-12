@@ -13,6 +13,7 @@ function App() {
             locale={ptBR}
             theme={{
                 token: {
+                    fontSize: 13,
                     colorPrimary: colors.primary,
                     colorPrimaryBg: colors.background,
                     colorText: colors.text.primary,
