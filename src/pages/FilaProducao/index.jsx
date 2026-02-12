@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Col, Layout, message, Progress, Row, Space, Typography } from 'antd';
-import { InfoCircleOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { Alert, Button, Col, Layout, message, Progress, Row, Slider, Space, Tag, Typography } from 'antd';
+import { HomeOutlined, InfoCircleOutlined, TeamOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import dayjs from 'dayjs';
 import { Card, LoadingSpinner, PaginatedTable, ScoreBadge, StatusBadge } from '../../components';
 import { useFilterSearchContext } from '../../contexts/FilterSearchContext';
+import { getUrgencyLevel, urgencyBarColors, urgencyColors } from '../../helpers/urgency';
 import OrdemProducaoService from '../../services/ordemProducaoService';
 import SequenciamentoService from '../../services/sequenciamentoService';
 import { colors } from '../../styles/colors';
@@ -17,6 +18,9 @@ const FilaProducao = () => {
   const [cenarioAtivo, setCenarioAtivo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingCenarios, setLoadingCenarios] = useState(true);
+  const [filtroTipo, setFiltroTipo] = useState('todos');
+  const [casaPct, setCasaPct] = useState(70);
+  const [resumo, setResumo] = useState({ totalCasa: 0, totalCliente: 0, total: 0 });
   const tableRef = useRef(null);
   const { searchTerm } = useFilterSearchContext();
 
@@ -67,7 +71,10 @@ const FilaProducao = () => {
           pageSize,
           search: searchTerm?.trim() || undefined,
           cenarioId: cenarioAtivoId ?? undefined,
+          filtroTipo: filtroTipo !== 'todos' ? filtroTipo : undefined,
         });
+        const resumoData = response.data?.resumo || {};
+        setResumo({ totalCasa: resumoData.totalCasa ?? 0, totalCliente: resumoData.totalCliente ?? 0, total: resumoData.total ?? 0 });
         return {
           data: response.data?.data || [],
           total: response.data?.pagination?.totalRecords || 0,
@@ -80,7 +87,7 @@ const FilaProducao = () => {
         setLoading(false);
       }
     },
-    [searchTerm, cenarioAtivoId]
+    [searchTerm, cenarioAtivoId, filtroTipo]
   );
 
   useEffect(() => {
@@ -92,9 +99,25 @@ const FilaProducao = () => {
   }, [cenarioAtivoId]);
 
   useEffect(() => {
+    if (tableRef.current) tableRef.current.reloadTable();
+  }, [filtroTipo]);
+
+  useEffect(() => {
     return () => debouncedReloadTable.cancel?.();
   }, [debouncedReloadTable]);
 
+
+  const casaReal = resumo.total > 0 ? Math.round((resumo.totalCasa / resumo.total) * 100) : 0;
+  const clienteReal = resumo.total > 0 ? 100 - casaReal : 0;
+  const desvioProporcao = Math.abs(casaReal - casaPct) > 15;
+
+  const handleSliderChange = (value) => {
+    const v = Array.isArray(value) ? value[0] : value;
+    setCasaPct(v);
+    if (v < 20 || v > 90) {
+      message.warning(`Proporção extrema: ${v}% Casa / ${100 - v}% Cliente`);
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -108,6 +131,16 @@ const FilaProducao = () => {
       { title: 'Código', dataIndex: 'codigo', key: 'codigo', width: 110, render: (v) => <Text strong style={{ fontFamily: 'monospace' }}>{v || '-'}</Text> },
       { title: 'Produto', dataIndex: 'produto', key: 'produto', width: 220, ellipsis: true },
       { title: 'Cliente', dataIndex: 'cliente', key: 'cliente', width: 200, ellipsis: true },
+      {
+        title: 'Tipo',
+        dataIndex: 'tipo',
+        key: 'tipo',
+        width: 90,
+        render: (tipo) => {
+          const t = tipo || 'cliente';
+          return t === 'casa' ? <Tag color="blue">CASA</Tag> : <Tag color="default">CLIENTE</Tag>;
+        },
+      },
       { title: 'Liga', dataIndex: 'liga', key: 'liga', width: 70, render: (v) => <Text style={{ fontFamily: 'monospace' }}>{v || '-'}</Text> },
       { title: 'Têmpera', dataIndex: 'tempera', key: 'tempera', width: 80, render: (v) => <Text style={{ fontFamily: 'monospace' }}>{v || '-'}</Text> },
       {
@@ -123,7 +156,11 @@ const FilaProducao = () => {
         dataIndex: 'dataEntrega',
         key: 'dataEntrega',
         width: 110,
-        render: (v) => (v ? dayjs(v).format('DD/MM/YYYY') : '-'),
+        render: (v, record) => {
+          const level = getUrgencyLevel(v, record.status);
+          const color = urgencyColors[level];
+          return <span style={{ color: color || undefined }}>{v ? dayjs(v).format('DD/MM/YYYY') : '-'}</span>;
+        },
       },
       { title: 'Recurso', dataIndex: 'recurso', key: 'recurso', width: 110, ellipsis: true },
       {
@@ -145,6 +182,10 @@ const FilaProducao = () => {
     []
   );
 
+  const onRow = useCallback((record) => ({
+    style: urgencyBarColors[getUrgencyLevel(record.dataEntrega, record.status)],
+  }), []);
+
   return (
     <Layout>
       <Content>
@@ -157,6 +198,67 @@ const FilaProducao = () => {
               icon={<ThunderboltOutlined style={{ color: colors.primary }} />}
             >
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                {/* Divisão de Capacidade */}
+                <div style={{ padding: '12px 16px', background: '#fafafa', border: '1px solid #f0f0f0', borderRadius: 8 }}>
+                  <Text strong style={{ fontSize: 13, display: 'block', marginBottom: 12 }}>Divisão de Capacidade</Text>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
+                    <Space wrap>
+                      {['todos', 'casa', 'cliente'].map((f) => (
+                        <Button
+                          key={f}
+                          type={filtroTipo === f ? 'primary' : 'default'}
+                          size="medium"
+                          icon={f === 'casa' ? <HomeOutlined /> : f === 'cliente' ? <TeamOutlined /> : null}
+                          onClick={() => setFiltroTipo(f)}
+                        >
+                          {f === 'todos' ? 'Todos' : f === 'casa' ? 'Casa' : 'Cliente'}
+                        </Button>
+                      ))}
+                    </Space>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 100 }}>
+                      <HomeOutlined style={{ color: colors.primary }} />
+                      <Text strong style={{ fontSize: 13 }}>{casaPct}%</Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Casa</Text>
+                    </div>
+                    <Slider
+                      min={0}
+                      max={100}
+                      step={5}
+                      value={casaPct}
+                      onChange={handleSliderChange}
+                      style={{ flex: 1, margin: 0 }}
+                    />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 100, justifyContent: 'flex-end' }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>Cliente</Text>
+                      <Text strong style={{ fontSize: 13, color: '#385E9D' }}>{100 - casaPct}%</Text>
+                      <TeamOutlined style={{ color: '#385E9D' }} />
+                    </div>
+                  </div>
+                  {resumo.total > 0 && (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                        <div style={{ flex: 1, height: 8, borderRadius: 4, background: colors.backgroundGray, overflow: 'hidden', display: 'flex' }}>
+                          <div style={{ width: `${casaReal}%`, height: '100%', background: colors.primary, transition: 'width 0.2s' }} />
+                          <div style={{ width: `${clienteReal}%`, height: '100%', background: '#385E9D', transition: 'width 0.2s' }} />
+                        </div>
+                        <Text type="secondary" style={{ fontSize: 11, whiteSpace: 'nowrap' }}>
+                          Real: {casaReal}% / {clienteReal}%
+                        </Text>
+                      </div>
+                      {desvioProporcao && (
+                        <Alert
+                          type="warning"
+                          showIcon
+                          message={`Proporção real (${casaReal}% Casa) difere do alvo (${casaPct}% Casa)`}
+                          style={{ marginTop: 8 }}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+
                 <div>
                   <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
                     Cenário de priorização
@@ -214,6 +316,7 @@ const FilaProducao = () => {
                     loadingIcon={<LoadingSpinner />}
                     disabled={loading}
                     scroll={{ x: 'max-content' }}
+                    onRow={onRow}
                   />
                 </div>
               </Space>

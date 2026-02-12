@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Form, Row } from "antd";
+import { Button, Col, Collapse, Divider, Form, Row } from "antd";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 import React, { useCallback, useMemo } from "react";
@@ -50,7 +50,9 @@ const DynamicForm = React.memo(({
     secondaryButton = null, // Botão secundário (ex: Limpar) na mesma linha do submit
     onValidate, // Nova prop para validação customizada
     validateOnChange = false, // Nova prop para validação em tempo real
-    showValidationFeedback = true // Nova prop para controlar feedback visual
+    showValidationFeedback = true, // Nova prop para controlar feedback visual
+    collapseAsFilter = false, // Quando true, envolve o form num Collapse com header "Filtros"
+    defaultFilterCollapseOpen = true // Quando collapseAsFilter, painel começa aberto (true) ou fechado (false)
 }) => {
     const [internalForm] = Form.useForm();
     const form = formInstance ?? internalForm;
@@ -511,7 +513,7 @@ const DynamicForm = React.memo(({
         );
     }, [submitOnSide, onClose, submitIcon, submitText, handleSubmit, secondaryButton]);
 
-    return (
+    const formContent = (
         <Form
             form={form}
             layout={layout}
@@ -526,6 +528,17 @@ const DynamicForm = React.memo(({
             {actionButtons}
         </Form>
     );
+
+    if (collapseAsFilter) {
+        return (
+            <Collapse defaultActiveKey={defaultFilterCollapseOpen ? ['filtros'] : []}>
+                <Collapse.Panel header="Filtros" key="filtros">
+                    {formContent}
+                </Collapse.Panel>
+            </Collapse>
+        );
+    }
+    return formContent;
 });
 
 export default DynamicForm;

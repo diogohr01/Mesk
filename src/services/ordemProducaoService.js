@@ -50,6 +50,12 @@ const getMockData = async (endpoint, data) => {
                 return matchCodigo || matchCliente || matchProduto;
             });
         }
+        if (filtros.filtroTipo === 'casa' || filtros.filtroTipo === 'cliente') {
+            filteredData = filteredData.filter(item => {
+                const tipo = item.tipo === 'casa' ? 'casa' : 'cliente';
+                return tipo === filtros.filtroTipo;
+            });
+        }
         
         // Paginação
         const start = (page - 1) * pageSize;
@@ -327,6 +333,7 @@ const OrdemProducaoService = {
             const pai = pais.find((p) => p.id === f.opPaiId);
             const dataEntrega = (f.itens && f.itens[0] && f.itens[0].dataEntrega) || '';
             const produto = (pai && pai.produto) || (f.itens && f.itens[0] && f.itens[0].descricaoItem) || '';
+            const quantidadeKg = (f.itens || []).reduce((s, i) => s + (parseFloat(i.quantidadeKg) || 0), 0);
             opsResumo.push({
                 id: f.id,
                 codigo: f.numeroOPERP || `${pai ? pai.numeroOPERP : ''}-${f.id}`,
@@ -335,12 +342,15 @@ const OrdemProducaoService = {
                 score: f.score != null ? f.score : 0,
                 produto,
                 cliente: (f.cliente && f.cliente.nome) || '',
+                quantidadeKg,
+                tipo: f.tipo === 'casa' ? 'casa' : 'cliente',
             });
         });
         pais.forEach((p) => {
             const hasFilhas = filhas.some((f) => f.opPaiId === p.id);
             if (!hasFilhas) {
                 const dataEntrega = (p.itens && p.itens[0] && p.itens[0].dataEntrega) || '';
+                const quantidadeKg = (p.itens || []).reduce((s, i) => s + (parseFloat(i.quantidadeKg) || 0), 0);
                 opsResumo.push({
                     id: p.id,
                     codigo: p.numeroOPERP || '',
@@ -349,6 +359,8 @@ const OrdemProducaoService = {
                     score: 0,
                     produto: p.produto || (p.itens && p.itens[0] && p.itens[0].descricaoItem) || '',
                     cliente: (p.cliente && p.cliente.nome) || '',
+                    quantidadeKg,
+                    tipo: p.tipo === 'casa' ? 'casa' : 'cliente',
                 });
             }
         });
@@ -362,7 +374,7 @@ const OrdemProducaoService = {
     // Fila de Produção: OPs FILHA não concluídas/canceladas, ordenadas por score, paginadas
     getFilaProducao: async (requestData) => {
         await delay(300);
-        const { page = 1, pageSize = 10, search } = requestData || {};
+        const { page = 1, pageSize = 10, search, filtroTipo } = requestData || {};
         const list = ordensProducaoMock.data || [];
         const pais = list.filter((op) => op.tipoOp === 'PAI');
         let fila = list
@@ -373,6 +385,7 @@ const OrdemProducaoService = {
                 const quantidade = (f.itens || []).reduce((s, i) => s + (parseFloat(i.quantidadePecas) || 0), 0);
                 const dataEntrega = primeiroItem?.dataEntrega || '';
                 const produto = (pai && pai.produto) || primeiroItem?.descricaoItem || '';
+                const tipo = (f.tipo === 'casa' || (pai && pai.tipo === 'casa')) ? 'casa' : 'cliente';
                 return {
                     id: f.id,
                     codigo: f.numeroOPERP || '',
@@ -385,6 +398,7 @@ const OrdemProducaoService = {
                     quantidade,
                     dataEntrega,
                     recurso: f.recurso || '',
+                    tipo,
                 };
             });
 
@@ -398,6 +412,14 @@ const OrdemProducaoService = {
             );
         }
 
+        if (filtroTipo === 'casa' || filtroTipo === 'cliente') {
+            fila = fila.filter((op) => op.tipo === filtroTipo);
+        }
+
+        const totalCasa = fila.filter((op) => op.tipo === 'casa').length;
+        const totalCliente = fila.filter((op) => op.tipo === 'cliente').length;
+        const resumo = { totalCasa, totalCliente, total: fila.length };
+
         fila.sort((a, b) => (b.score || 0) - (a.score || 0));
         const totalRecords = fila.length;
         const start = (page - 1) * pageSize;
@@ -407,6 +429,7 @@ const OrdemProducaoService = {
             data: {
                 data,
                 pagination: { totalRecords, page, pageSize },
+                resumo,
             },
             success: true,
             message: 'Success',

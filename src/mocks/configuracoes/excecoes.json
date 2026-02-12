@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "id": "e1",
+      "dataInicio": "2026-03-01",
+      "dataFim": "2026-03-01",
+      "tipo": "feriado",
+      "descricao": "Carnaval",
+      "recursoIds": []
+    },
+    {
+      "id": "e2",
+      "dataInicio": "2026-02-20",
+      "dataFim": "2026-02-21",
+      "tipo": "manutencao",
+      "descricao": "Manutenção preventiva Prensa 03",
+      "recursoIds": ["rec-3"]
+    },
+    {
+      "id": "e3",
+      "dataInicio": "2026-02-25",
+      "dataFim": "2026-02-26",
+      "tipo": "manutencao",
+      "descricao": "Manutenção geral - prensas 01, 02 e 03",
+      "recursoIds": ["rec-1", "rec-2", "rec-3"]
+    }
+  ]
+}

@@ -3,23 +3,36 @@ import {
   Col,
   Progress,
   Row,
+  Tag,
   Typography,
 } from 'antd';
 import {
+  BarChartOutlined,
+  BellOutlined,
   CheckCircleOutlined,
   FileTextOutlined,
   RiseOutlined,
   ToolOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Card as LayoutCard, KpiCard, ScoreBadge, StatusBadge } from '../../components';
+import AlertasService from '../../services/alertasService';
 import OrdemProducaoService from '../../services/ordemProducaoService';
 import RecursosProdutivosService from '../../services/recursosProdutivosService';
 import { statusLabels } from '../../constants/ordemProducaoStatus';
 import { colors } from '../../styles/colors';
 
 const { Title, Text } = Typography;
+
+const ALERTA_STYLES = {
+  urgente: { borderLeft: '4px solid #ff4d4f', backgroundColor: '#fff2f0' },
+  warning: { borderLeft: '4px solid #faad14', backgroundColor: '#fffbe6' },
+  info: { borderLeft: '4px solid #1890ff', backgroundColor: '#e6f7ff' },
+};
+
+const CAPACIDADE_TOTAL = 30;
 
 const RESUMO_STATUS_KEYS = ['rascunho', 'sequenciada', 'confirmada', 'em_producao'];
 const RESUMO_STATUS = RESUMO_STATUS_KEYS.map((key) => ({
@@ -31,6 +44,9 @@ const RESUMO_STATUS = RESUMO_STATUS_KEYS.map((key) => ({
 const Dashboard = () => {
   const [opsResumo, setOpsResumo] = useState([]);
   const [recursos, setRecursos] = useState([]);
+  const [alertas, setAlertas] = useState([]);
+  const [hoveredFilaId, setHoveredFilaId] = useState(null);
+  const [hoveredAlertaId, setHoveredAlertaId] = useState(null);
 
   useEffect(() => {
     OrdemProducaoService.getDadosDashboard().then((res) => {
@@ -41,6 +57,11 @@ const Dashboard = () => {
     RecursosProdutivosService.getAll().then((res) => {
       if (res.success && res.data && res.data.data) {
         setRecursos(res.data.data.map((r) => ({ nome: r.nome, carga: r.status === 'manutencao' ? 0 : 70, status: r.status })));
+      }
+    });
+    AlertasService.getAll().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setAlertas(res.data.data);
       }
     });
   }, []);
@@ -68,6 +89,23 @@ const Dashboard = () => {
         .slice(0, 5),
     [opsResumo]
   );
+
+  const opsEmProducao = useMemo(
+    () => opsResumo.filter((op) => op.status === 'em_producao'),
+    [opsResumo]
+  );
+  const programadoHoje = useMemo(
+    () => opsEmProducao.reduce((acc, op) => acc + (op.quantidadeKg || 0) / 1000, 0),
+    [opsEmProducao]
+  );
+  const casaHoje = useMemo(
+    () => opsEmProducao.filter((op) => op.tipo === 'casa').reduce((acc, op) => acc + (op.quantidadeKg || 0) / 1000, 0),
+    [opsEmProducao]
+  );
+  const clienteHoje = programadoHoje - casaHoje;
+  const capacidadePct = Math.min(Math.round((programadoHoje / CAPACIDADE_TOTAL) * 100), 100);
+
+  const alertasUrgentesCount = alertas.filter((a) => a.tipo === 'urgente').length;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -127,140 +165,280 @@ const Dashboard = () => {
 
       <Row gutter={[24, 24]}>
         {/* Fila prioritária */}
-        <Col xs={24} lg={12}>
-          <LayoutCard
-            header={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Title level={5} style={{ margin: 0 }}>Fila Prioritária</Title>
-                <Link to="/ordem-producao/cadastro" style={{ fontSize: 12, color: colors.primary }}>
-                  Ver tudo →
-                </Link>
-              </div>
-            }
+        <Col xs={24} lg={16}>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
             style={{ height: '100%' }}
           >
-            <div>
-              {opsUrgentes.map((op, i) => (
-                <div
-                  key={op.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 0',
-                    borderBottom: i < opsUrgentes.length - 1 ? '1px solid #f0f0f0' : 'none',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <Text type="secondary" style={{ width: 20, fontFamily: 'monospace', fontSize: 12 }}>
-                      {i + 1}
-                    </Text>
-                    <div>
-                      <Text strong style={{ display: 'block', fontSize: 14 }}>
-                        {op.codigo}
+            <LayoutCard
+              header={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Title level={5} style={{ margin: 0 }}>Fila Prioritária</Title>
+                  <Link to="/ordem-producao/cadastro" style={{ fontSize: 12, color: colors.primary }}>
+                    Ver tudo →
+                  </Link>
+                </div>
+              }
+              style={{ height: '100%' }}
+            >
+              <div>
+                {opsUrgentes.map((op, i) => (
+                  <div
+                    key={op.id}
+                    onMouseEnter={() => setHoveredFilaId(op.id)}
+                    onMouseLeave={() => setHoveredFilaId(null)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 0',
+                      borderBottom: i < opsUrgentes.length - 1 ? '1px solid #f0f0f0' : 'none',
+                      backgroundColor: hoveredFilaId === op.id ? '#fafafa' : 'transparent',
+                      transition: 'background-color 0.2s',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <Text type="secondary" style={{ width: 20, fontFamily: 'monospace', fontSize: 12 }}>
+                        {i + 1}
                       </Text>
-                      <Text type="secondary" style={{ fontSize: 12 }}>
-                        {op.produto} • {op.cliente}
-                      </Text>
+                      <div>
+                        <Text strong style={{ display: 'block', fontSize: 14 }}>
+                          {op.codigo}
+                        </Text>
+                        <Text type="secondary" style={{ fontSize: 12 }}>
+                          {op.produto} • {op.cliente}
+                        </Text>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <StatusBadge status={op.status} />
+                      <ScoreBadge score={op.score} />
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <StatusBadge status={op.status} />
-                    <ScoreBadge score={op.score} />
+                ))}
+              </div>
+            </LayoutCard>
+          </motion.div>
+        </Col>
+
+        {/* Alertas */}
+        <Col xs={24} lg={8}>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            style={{ height: '100%' }}
+          >
+            <LayoutCard
+              header={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Title level={5} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <BellOutlined style={{ color: colors.primary }} />
+                    Alertas
+                    {alertasUrgentesCount > 0 && (
+                      <Tag color="error" style={{ fontSize: 10, lineHeight: '16px', padding: '0px' }}>
+                        {alertasUrgentesCount}
+                      </Tag>
+                    )}
+                  </Title>
+                </div>
+              }
+              style={{ height: '100%' }}
+            >
+              <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+                {alertas.map((alerta, idx) => (
+                  <div
+                    key={alerta.id}
+                    onMouseEnter={() => setHoveredAlertaId(alerta.id)}
+                    onMouseLeave={() => setHoveredAlertaId(null)}
+                    style={{
+                      padding: '12px 16px',
+                      borderLeft: `4px solid ${colors.primary}`,
+                      backgroundColor: colors.white,
+                      borderBottom: idx < alertas.length - 1 ? '1px solid #f0f0f0' : 'none',
+                      transition: 'background-color 0.2s',
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, display: 'block', lineHeight: 1.5 }}>{alerta.msg}</Text>
+                    <Text type="secondary" style={{ fontSize: 10, marginTop: 4, display: 'block' }}>{alerta.tempo} atrás</Text>
+                  </div>
+                ))}
+              </div>
+            </LayoutCard>
+          </motion.div>
+        </Col>
+      </Row>
+
+      <Row gutter={[24, 24]}>
+        {/* Capacidade Diária */}
+        <Col xs={24} lg={12}>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            style={{ height: '100%' }}
+          >
+            <LayoutCard
+              header={
+                <Title level={5} style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <BarChartOutlined style={{ color: colors.primary }} />
+                  Capacidade Diária
+                </Title>
+              }
+              style={{ height: '100%' }}
+            >
+              <div style={{ padding: '8px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <Text style={{ fontSize: 24, fontWeight: 700, fontFamily: 'monospace' }}>
+                    {programadoHoje.toFixed(1)}{' '}
+                    <Text type="secondary" style={{ fontSize: 14, fontWeight: 400 }}>/ {CAPACIDADE_TOTAL} ton</Text>
+                  </Text>
+                  <Tag
+                    color={
+                      capacidadePct > 90 ? 'error' : capacidadePct > 70 ? 'warning' : 'success'
+                    }
+                    style={{ margin: 0 }}
+                  >
+                    {capacidadePct}%
+                  </Tag>
+                </div>
+                <div
+                  style={{
+                    height: 12,
+                    borderRadius: 6,
+                    background: colors.backgroundGray,
+                    overflow: 'hidden',
+                    display: 'flex',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${Math.round((casaHoje / CAPACIDADE_TOTAL) * 100)}%`,
+                      height: '100%',
+                      background: colors.primary,
+                      transition: 'width 0.3s',
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: `${Math.round((clienteHoje / CAPACIDADE_TOTAL) * 100)}%`,
+                      height: '100%',
+                      background: '#385E9D',
+                      transition: 'width 0.3s',
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: 16, marginTop: 12, fontSize: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 12, height: 8, borderRadius: 2, background: colors.primary }} />
+                    <Text type="secondary">Casa: {casaHoje.toFixed(1)} ton</Text>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 12, height: 8, borderRadius: 2, background: '#385E9D' }} />
+                    <Text type="secondary">Cliente: {clienteHoje.toFixed(1)} ton</Text>
                   </div>
                 </div>
-              ))}
-            </div>
-          </LayoutCard>
+              </div>
+            </LayoutCard>
+          </motion.div>
         </Col>
 
         {/* Status dos Recursos */}
         <Col xs={24} lg={12}>
-          <LayoutCard
-            header={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Title level={5} style={{ margin: 0 }}>Status dos Recursos</Title>
-                <Link to="/recursos-produtivos" style={{ fontSize: 12, color: colors.primary }}>
-                  Gerenciar →
-                </Link>
-              </div>
-            }
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
             style={{ height: '100%' }}
           >
-            <div style={{ marginBottom: 24 }}>
-              {recursos.map((r) => (
-                <div key={r.nome} style={{ marginBottom: 16 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <Text style={{ fontSize: 14 }}>{r.nome}</Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 500,
-                        color: r.status === 'operando' ? '#52c41a' : '#ff4d4f',
-                      }}
-                    >
-                      {r.status === 'operando' ? `${r.carga}% carga` : 'Em manutenção'}
-                    </Text>
-                  </div>
-                  <Progress
-                    percent={r.status === 'operando' ? r.carga : 100}
-                    showInfo={false}
-                    strokeColor={r.status === 'operando' ? (r.carga > 80 ? colors.primary : '#d46b08') : '#ff4d4f'}
-                    trailColor="#f0f0f0"
-                    size="small"
-                  />
+            <LayoutCard
+              header={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Title level={5} style={{ margin: 0 }}>Status dos Recursos</Title>
+                  <Link to="/recursos-produtivos" style={{ fontSize: 12, color: colors.primary }}>
+                    Gerenciar →
+                  </Link>
                 </div>
-              ))}
-            </div>
-
-            <div
-              style={{
-                background: colors.backgroundGray,
-                borderRadius: 8,
-                padding: 16,
-              }}
+              }
+              style={{ height: '100%' }}
             >
-              <Text
-                strong
+              <div style={{ marginBottom: 24 }}>
+                {recursos.map((r) => (
+                  <div key={r.nome} style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <Text style={{ fontSize: 14 }}>{r.nome}</Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 500,
+                          color: r.status === 'operando' ? '#52c41a' : '#ff4d4f',
+                        }}
+                      >
+                        {r.status === 'operando' ? `${r.carga}% carga` : 'Em manutenção'}
+                      </Text>
+                    </div>
+                    <Progress
+                      percent={r.status === 'operando' ? r.carga : 100}
+                      showInfo={false}
+                      strokeColor={r.status === 'operando' ? (r.carga > 80 ? colors.primary : '#d46b08') : '#ff4d4f'}
+                      trailColor="#f0f0f0"
+                      size="small"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div
                 style={{
-                  display: 'block',
-                  fontSize: 11,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  color: colors.text.secondary,
-                  marginBottom: 12,
+                  background: colors.backgroundGray,
+                  borderRadius: 8,
+                  padding: 16,
                 }}
               >
-                Resumo por Status
-              </Text>
-              <Row gutter={[16, 8]}>
-                {RESUMO_STATUS.map((s) => {
-                  const count = opsResumo.filter((o) => o.status === s.key).length;
-                  return (
-                    <Col span={12} key={s.key}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            backgroundColor: s.color,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          {s.label}
-                        </Text>
-                        <Text strong style={{ marginLeft: 'auto', fontFamily: 'monospace', fontSize: 12 }}>
-                          {count}
-                        </Text>
-                      </div>
-                    </Col>
-                  );
-                })}
-              </Row>
-            </div>
-          </LayoutCard>
+                <Text
+                  strong
+                  style={{
+                    display: 'block',
+                    fontSize: 11,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: colors.text.secondary,
+                    marginBottom: 12,
+                  }}
+                >
+                  Resumo por Status
+                </Text>
+                <Row gutter={[16, 8]}>
+                  {RESUMO_STATUS.map((s) => {
+                    const count = opsResumo.filter((o) => o.status === s.key).length;
+                    return (
+                      <Col span={12} key={s.key}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: s.color,
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            {s.label}
+                          </Text>
+                          <Text strong style={{ marginLeft: 'auto', fontFamily: 'monospace', fontSize: 12 }}>
+                            {count}
+                          </Text>
+                        </div>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </div>
+            </LayoutCard>
+          </motion.div>
         </Col>
       </Row>
     </div>

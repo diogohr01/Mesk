@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Row, Slider, Space, Typography } from 'antd';
-import { Card } from '../../components';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Button, Col, Form, Row, Slider, Space, Tag, Typography } from 'antd';
+import { Card, DynamicForm, LoadingSpinner, PaginatedTable } from '../../components';
 import {
+  CalendarOutlined,
+  DeleteOutlined,
   HolderOutlined,
   RollbackOutlined,
   SettingOutlined,
   SlidersOutlined,
 } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import dayjs from 'dayjs';
 import { toast } from '../../helpers/toast';
 import ConfiguracoesService from '../../services/configuracoesService';
+import RecursosProdutivosService from '../../services/recursosProdutivosService';
 import { colors } from '../../styles/colors';
 
 const { Text } = Typography;
@@ -17,6 +21,11 @@ const { Text } = Typography;
 const Configuracoes = () => {
   const [criterios, setCriterios] = useState([]);
   const total = criterios.reduce((s, c) => s + c.value, 0);
+  const [excecoes, setExcecoes] = useState([]);
+  const [recursos, setRecursos] = useState([]);
+  const [showAddExcecao, setShowAddExcecao] = useState(false);
+  const [excecaoForm] = Form.useForm();
+  const excecoesTableRef = useRef(null);
 
   useEffect(() => {
     ConfiguracoesService.getCriteriosScore().then((res) => {
@@ -25,6 +34,78 @@ const Configuracoes = () => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    ConfiguracoesService.getExcecoes().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setExcecoes(res.data.data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    RecursosProdutivosService.getAll().then((res) => {
+      if (res.success && res.data && res.data.data) {
+        setRecursos(res.data.data);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (showAddExcecao) {
+      excecaoForm.setFieldsValue({ tipo: 'feriado' });
+    } else {
+      excecaoForm.resetFields();
+    }
+  }, [showAddExcecao, excecaoForm]);
+
+  const formConfigExcecao = useMemo(
+    () => [
+      {
+        columns: 2,
+        questions: [
+          {
+            type: 'date',
+            id: 'dataInicio',
+            label: 'Data início',
+            required: true,
+            format: 'DD/MM/YYYY',
+          },
+          {
+            type: 'date',
+            id: 'dataFim',
+            label: 'Data fim (opcional)',
+            required: false,
+            format: 'DD/MM/YYYY',
+          },
+          {
+            type: 'select',
+            id: 'tipo',
+            label: 'Tipo',
+            options: [
+              { value: 'feriado', label: 'Feriado' },
+              { value: 'manutencao', label: 'Manutenção' },
+              { value: 'outro', label: 'Outro' },
+            ],
+          },
+          {
+            type: 'text',
+            id: 'descricao',
+            label: 'Descrição',
+            placeholder: 'Ex.: Carnaval, Manutenção preventiva',
+          },
+          {
+            type: 'multiselect',
+            id: 'recursoIds',
+            label: 'Recursos (prensas)',
+            placeholder: 'Todos se vazio',
+            options: recursos.map((r) => ({ value: r.id, label: r.nome })),
+          },
+        ],
+      },
+    ],
+    [recursos]
+  );
 
   const handleValueChange = useCallback((id, newValue) => {
     setCriterios((prev) =>
@@ -71,6 +152,120 @@ const Configuracoes = () => {
       return next;
     });
   }, []);
+
+  const handleCancelExcecao = useCallback(() => {
+    setShowAddExcecao(false);
+  }, []);
+
+  const handleSaveExcecao = useCallback(
+    (values) => {
+      const serializeDate = (v) =>
+        !v ? null : (dayjs.isDayjs(v) ? v : dayjs(v)).format('YYYY-MM-DD');
+      const dataInicio = serializeDate(values.dataInicio);
+      if (!dataInicio) {
+        toast.error('Data de início obrigatória.');
+        return;
+      }
+      const dataFim = serializeDate(values.dataFim) || dataInicio;
+      const recursoIds = values.recursoIds || [];
+      const nova = {
+        id: `e${Date.now()}`,
+        dataInicio,
+        dataFim,
+        tipo: values.tipo || 'feriado',
+        descricao: values.descricao || '',
+        recursoIds,
+        recursos: recursoIds.map((id) => {
+          const r = recursos.find((rec) => rec.id === id);
+          return r ? { id: r.id, nome: r.nome } : null;
+        }).filter(Boolean),
+      };
+      setExcecoes((prev) => [...prev, nova]);
+      excecaoForm.resetFields();
+      setShowAddExcecao(false);
+      toast.success('Exceção adicionada', 'A exceção foi registada na lista.');
+      setTimeout(() => excecoesTableRef.current?.reloadTable(), 0);
+    },
+    [recursos, excecaoForm]
+  );
+
+  const handleRemoveExcecao = useCallback((id) => {
+    setExcecoes((prev) => prev.filter((e) => e.id !== id));
+    toast.success('Exceção removida');
+    setTimeout(() => excecoesTableRef.current?.reloadTable(), 0);
+  }, []);
+
+  const fetchDataExcecoes = useCallback(
+    async (page, pageSize) => {
+      const start = (page - 1) * pageSize;
+      return {
+        data: excecoes.slice(start, start + pageSize),
+        total: excecoes.length,
+      };
+    },
+    [excecoes]
+  );
+
+  const columnsExcecoes = useMemo(
+    () => [
+      {
+        key: 'excecao',
+        title: '',
+        dataIndex: null,
+        render: (_, record) => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 8,
+              padding: '10px 12px',
+              borderRadius: 6,
+              border: `1px solid ${colors.backgroundGray}`,
+              backgroundColor: colors.background,
+            }}
+          >
+            <Tag
+              color={
+                record.tipo === 'feriado'
+                  ? 'blue'
+                  : record.tipo === 'manutencao'
+                    ? 'orange'
+                    : 'default'
+              }
+            >
+              {record.tipo === 'feriado' ? 'Feriado' : record.tipo === 'manutencao' ? 'Manutenção' : 'Outro'}
+            </Tag>
+            <Text style={{ flex: '1 1 auto', minWidth: 0 }}>
+              {record.descricao || '—'}
+            </Text>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {record.dataInicio && dayjs(record.dataInicio).format('DD/MM/YYYY')}
+              {record.dataFim && record.dataFim !== record.dataInicio
+                ? ` — ${dayjs(record.dataFim).format('DD/MM/YYYY')}`
+                : ''}
+            </Text>
+            {(record.recursos && record.recursos.length > 0) && (
+              <Space size={4} wrap>
+                {record.recursos.map((r) => (
+                  <Tag key={r.id}>{r.nome}</Tag>
+                ))}
+              </Space>
+            )}
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleRemoveExcecao(record.id)}
+              title="Remover exceção"
+            />
+          </div>
+        ),
+      },
+    ],
+    [handleRemoveExcecao]
+  );
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -188,6 +383,65 @@ const Configuracoes = () => {
           </Card>
         </Col>
       </Row>
+
+      <Card
+        title={
+          <Space>
+            <CalendarOutlined style={{ color: colors.primary }} />
+            <span>Exceções de Calendário</span>
+          </Space>
+        }
+        extra={
+          <Button
+            type="primary"
+                  onClick={() => setShowAddExcecao((v) => !v)}
+          >
+            {showAddExcecao ? 'Fechar' : 'Nova Exceção'}
+          </Button>
+        }
+        style={{ borderColor: colors.backgroundGray }}
+      >
+        <Text type="secondary" style={{ display: 'block', fontSize: 12, marginBottom: 12 }}>
+          Feriados, manutenções e dias sem produção; exibidos como blocos no Gantt.
+        </Text>
+
+        {showAddExcecao && (
+          <div
+            style={{
+              padding: 16,
+              marginBottom: 16,
+              borderRadius: 8,
+              border: `1px solid ${colors.backgroundGray}`,
+              backgroundColor: colors.background,
+            }}
+          >
+            <DynamicForm
+              formConfig={formConfigExcecao}
+              formInstance={excecaoForm}
+              onSubmit={handleSaveExcecao}
+              onClose={handleCancelExcecao}
+              submitText="Salvar"
+              submitOnSide={true}
+            />
+          </div>
+        )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {excecoes.length === 0 ? (
+            <Text type="secondary">Nenhuma exceção registada.</Text>
+          ) : (
+            <PaginatedTable
+              ref={excecoesTableRef}
+              fetchData={fetchDataExcecoes}
+              columns={columnsExcecoes}
+              initialPageSize={10}
+              rowKey="id"
+              showHeader={false}
+              loadingIcon={<LoadingSpinner />}
+            />
+          )}
+        </div>
+      </Card>
     </div>
   );
 };

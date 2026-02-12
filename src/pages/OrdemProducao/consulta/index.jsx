@@ -60,6 +60,17 @@ const OrdemProducaoConsulta = () => {
         },
         {
           type: "select",
+          id: "filtroTipo",
+          required: false,
+          label: "Tipo",
+          options: [
+            { value: "todos", label: "Todos" },
+            { value: "casa", label: "Casa" },
+            { value: "cliente", label: "Cliente" },
+          ]
+        },
+        {
+          type: "select",
           id: "item",
           required: false,
           placeholder: "Selecione o item",
@@ -432,6 +443,7 @@ const OrdemProducaoConsulta = () => {
                 <DynamicForm
                   formConfig={filterFormConfig}
                   formInstance={filterForm}
+                  collapseAsFilter
                   submitText="Filtrar"
                   submitIcon={<AiOutlineSearch />}
                   submitOnSide={true}

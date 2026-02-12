@@ -157,6 +157,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                 <DynamicForm
                   formConfig={filterFormConfig}
                   formInstance={filterForm}
+                  collapseAsFilter
                   submitText="Filtrar"
                   submitIcon={<AiOutlineSearch />}
                   submitOnSide={true}

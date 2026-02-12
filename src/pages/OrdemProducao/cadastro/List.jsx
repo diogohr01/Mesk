@@ -44,9 +44,9 @@ const List = ({ onAdd, onEdit, onView }) => {
     {
       columns: 4,
       questions: [
-        
         { type: 'text', id: 'numeroOPERP', required: false, placeholder: 'Digite o número da OP...', label: 'OP ERP', size: 'middle' },
         { type: 'text', id: 'cliente', required: false, placeholder: 'Digite o nome do cliente...', label: 'Cliente', size: 'middle' },
+        { type: 'select', id: 'filtroTipo', required: false, label: 'Tipo', size: 'middle', options: [{ value: 'todos', label: 'Todos' }, { value: 'casa', label: 'Casa' }, { value: 'cliente', label: 'Cliente' }] },
         { type: 'text', id: 'situacao', required: false, placeholder: 'Digite a situação...', label: 'Situação', size: 'middle' },
         { type: 'date', id: 'dataOP', required: false, placeholder: 'Selecione a data...', label: 'Data', size: 'middle' },
       ],
@@ -77,6 +77,7 @@ const List = ({ onAdd, onEdit, onView }) => {
           tipoOp: 'PAI',
           numeroOPERP: filters.numeroOPERP,
           cliente: filters.cliente,
+          filtroTipo: filters.filtroTipo && filters.filtroTipo !== 'todos' ? filters.filtroTipo : undefined,
           situacao: statusFilter !== 'todos' ? statusFilter : filters.situacao,
           dataOP: filters.dataOP ? dayjs(filters.dataOP).format('YYYY-MM-DD') : undefined,
           dataInicio: di,
@@ -115,6 +116,7 @@ const List = ({ onAdd, onEdit, onView }) => {
           tipoOp: 'FILHA',
           numeroOPERP: filters.numeroOPERP,
           cliente: filters.cliente,
+          filtroTipo: filters.filtroTipo && filters.filtroTipo !== 'todos' ? filters.filtroTipo : undefined,
           situacao: statusFilter !== 'todos' ? statusFilter : filters.situacao,
           dataInicio: di,
           dataFim: df,
@@ -529,6 +531,7 @@ const List = ({ onAdd, onEdit, onView }) => {
                 <DynamicForm
                   formConfig={filterFormConfig}
                   formInstance={filterForm}
+                  collapseAsFilter
                   submitText="Filtrar"
                   submitIcon={<AiOutlineSearch />}
                   submitOnSide={true}

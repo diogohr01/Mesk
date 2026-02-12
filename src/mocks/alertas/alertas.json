@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "tipo": "urgente",
+      "msg": "OP-10102 entrega amanhã — prioridade crítica",
+      "tempo": "2 min",
+      "ordemProducaoId": 3,
+      "recursoId": null
+    },
+    {
+      "id": 2,
+      "tipo": "warning",
+      "msg": "Prensa 03 entra em manutenção em 20/02",
+      "tempo": "15 min",
+      "ordemProducaoId": null,
+      "recursoId": "rec-3"
+    },
+    {
+      "id": 3,
+      "tipo": "info",
+      "msg": "OP-10104 mudou data de entrega para 03/03",
+      "tempo": "1h",
+      "ordemProducaoId": 8,
+      "recursoId": null
+    },
+    {
+      "id": 4,
+      "tipo": "warning",
+      "msg": "Proporção Casa/Cliente fora do alvo (real 55% vs alvo 70%)",
+      "tempo": "2h",
+      "ordemProducaoId": null,
+      "recursoId": null
+    },
+    {
+      "id": 5,
+      "tipo": "urgente",
+      "msg": "Perda acima de 10% detectada na OP-10102",
+      "tempo": "3h",
+      "ordemProducaoId": 3,
+      "recursoId": "rec-1"
+    }
+  ]
+}
