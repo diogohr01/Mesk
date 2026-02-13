@@ -491,6 +491,23 @@ const OrdemProducaoService = {
                 ops = ops.filter((op) => op.dataOP && String(op.dataOP).split('T')[0] === dataStr);
             }
         }
+        if (filtros.dataInicio || filtros.dataFim) {
+            const filhas = list.filter((op) => op.tipoOp === 'FILHA' && op.status !== 'cancelada');
+            const dataInicioStr = filtros.dataInicio ? (typeof filtros.dataInicio === 'string' ? filtros.dataInicio : filtros.dataInicio.split?.('T')[0]) : null;
+            const dataFimStr = filtros.dataFim ? (typeof filtros.dataFim === 'string' ? filtros.dataFim : filtros.dataFim.split?.('T')[0]) : null;
+            const idsNoRange = new Set(
+                filhas
+                    .filter((f) => {
+                        const di = f.dataInicio ? String(f.dataInicio).split('T')[0] : null;
+                        if (!di) return true;
+                        if (dataInicioStr && di < dataInicioStr) return true;
+                        if (dataFimStr && di > dataFimStr) return true;
+                        return false;
+                    })
+                    .map((f) => f.id)
+            );
+            ops = ops.filter((op) => !idsNoRange.has(op.id));
+        }
         return {
             data: { ops },
             success: true,

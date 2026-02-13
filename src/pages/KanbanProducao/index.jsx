@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Form, Layout, message, Modal, Row, Typography } from 'antd';
+import { Button, Col, DatePicker, Form, Layout, message, Modal, Row, Space, Typography } from 'antd';
 import { AppstoreOutlined, EditOutlined, FilterOutlined, HolderOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import 'dayjs/locale/pt-br';
+
+dayjs.extend(isoWeek);
+dayjs.locale('pt-br');
 import { AiOutlineClear, AiOutlineSearch } from 'react-icons/ai';
 import { Card, DynamicForm, ScoreBadge, StyledScroll } from '../../components';
 import OrdemProducaoService from '../../services/ordemProducaoService';
@@ -35,6 +40,11 @@ const COLUMN_BORDER_COLORS = {
   concluida: '#52c41a',
 };
 
+const getSemanaAtual = () => [
+  dayjs().startOf('isoWeek'),
+  dayjs().endOf('isoWeek'),
+];
+
 const KanbanProducao = () => {
   const [ops, setOps] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,12 +52,14 @@ const KanbanProducao = () => {
   const [overColumn, setOverColumn] = useState(null);
   const [modalFiltrosOpen, setModalFiltrosOpen] = useState(false);
   const [filterForm] = Form.useForm();
+  const [weekRange, setWeekRange] = useState(() => getSemanaAtual());
 
   const getOPsByStatus = useCallback((status) => ops.filter((op) => op.status === status), [ops]);
 
   const loadKanban = useCallback((filtros = {}) => {
     setLoading(true);
     const params = { ...filtros };
+   
     if (params.dataOP && (params.dataOP.toISOString || dayjs.isDayjs(params.dataOP))) {
       params.dataOP = dayjs(params.dataOP).format('YYYY-MM-DD');
     }
@@ -57,7 +69,7 @@ const KanbanProducao = () => {
       })
       .catch(() => message.error('Erro ao carregar o Kanban.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [weekRange]);
 
   useEffect(() => {
     loadKanban(filterForm.getFieldsValue());
@@ -121,13 +133,24 @@ const KanbanProducao = () => {
               subtitle="Arraste os cards entre colunas para alterar o status"
               icon={<AppstoreOutlined style={{ color: colors.primary }} />}
               extra={
-                <Button
-                  type="default"
-                  icon={<FilterOutlined />}
-                  onClick={() => setModalFiltrosOpen(true)}
-                >
-                  Filtrar
-                </Button>
+                <Space size="middle" wrap>
+                  <DatePicker.RangePicker
+                    value={weekRange}
+                    onChange={(dates) => {
+                      if (dates && dates[0] && dates[1]) setWeekRange([dates[0], dates[1]]);
+                    }}
+                    format="DD/MM/YYYY"
+                    placeholder={['Início', 'Fim']}
+                    style={{ width: 240 }}
+                  />
+                  <Button
+                    type="default"
+                    icon={<FilterOutlined />}
+                    onClick={() => setModalFiltrosOpen(true)}
+                  >
+                    Filtrar
+                  </Button>
+                </Space>
               }
               loading={loading}
             >

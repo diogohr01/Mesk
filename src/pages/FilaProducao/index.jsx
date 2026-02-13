@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Col, Layout, message, Row, Slider, Space, Tag, Typography } from 'antd';
+import { Button, Col, DatePicker, Layout, message, Row, Slider, Space, Tag, Typography } from 'antd';
 import { ThunderboltOutlined, EditOutlined, UnorderedListOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
 import dayjs from 'dayjs';
@@ -36,6 +36,13 @@ const FilaProducao = () => {
   const tableRef = useRef(null);
   const { searchTerm } = useFilterSearchContext();
   const { setCenarioId: setContextCenarioId, setFiltroTipo: setContextFiltroTipo } = useFilaGanttFilterContext();
+
+  const getSemanaAtual = () => [
+    dayjs().startOf('isoWeek'),
+    dayjs().endOf('isoWeek'),
+  ];
+
+  const [weekRange, setWeekRange] = useState(() => getSemanaAtual());
 
   useEffect(() => {
     setContextCenarioId(cenarioAtivo ?? (cenarios[0]?.id ?? null));
@@ -181,8 +188,7 @@ const FilaProducao = () => {
           return t === 'casa' ? <Tag color="blue">CASA</Tag> : <Tag color="default">CLIENTE</Tag>;
         },
       },
-      { title: 'Liga', dataIndex: 'liga', key: 'liga', width: 70, render: (v) => <Text style={{ fontFamily: 'monospace' }}>{v || '-'}</Text> },
-      { title: 'Têmpera', dataIndex: 'tempera', key: 'tempera', width: 50, render: (v) => <Text style={{ fontFamily: 'monospace' }}>{v || '-'}</Text> },
+
       {
         title: 'Qtd',
         dataIndex: 'quantidade',
@@ -274,6 +280,15 @@ const FilaProducao = () => {
 
   const filtrosNaTitulo = (
     <Space wrap size="small">
+       <DatePicker.RangePicker
+                    value={weekRange}
+                    onChange={(dates) => {
+                      if (dates && dates[0] && dates[1]) setWeekRange([dates[0], dates[1]]);
+                    }}
+                    format="DD/MM/YYYY"
+                    placeholder={['Início', 'Fim']}
+                    style={{ width: 240 }}
+                  />
       <Button
         type={modoSequenciamento ? 'primary' : 'default'}
         icon={<EditOutlined />}
