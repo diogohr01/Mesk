@@ -1,10 +1,11 @@
-import { AppstoreOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, MenuFoldOutlined, MenuUnfoldOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Col, Divider, Layout, Popover, Row, Space, Typography } from 'antd';
 import { Card, HeaderSearchInput } from '../../../components';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Modal } from '../../../components';
 import { FilterSearchProvider, useFilterSearchContext } from '../../../contexts/FilterSearchContext';
+import { FilaGanttFilterProvider } from '../../../contexts/FilaGanttFilterContext';
 import { useAuth } from '../../../hooks/auth';
 import { defaultRoutes } from '../../../routes/routes';
 import { colors } from '../../../styles/colors';
@@ -121,12 +122,13 @@ const AuthorizedLayout = ({ children, userName }) => {
         navigate(0); // Recarrega a página
     };
 
-    // Definição dos itens do menu lateral (estilos em SidebarMenu.styles.js)
+    // Definição dos itens do menu lateral (estilos em SidebarMenu.styles.js). inlineCollapsed esconde o texto quando o Sider está recolhido (só ícones).
     const sidebarMenu = (
         <StyledSidebarMenu
             mode="inline"
+            inlineCollapsed={collapsed}
             selectedKeys={[location.pathname]}
-            openKeys={openKeys}
+            openKeys={collapsed ? [] : openKeys}
             onOpenChange={handleOpenChange}
             onClick={handleMenuClick}
             items={generateMenuItems(routes)}
@@ -157,7 +159,7 @@ const AuthorizedLayout = ({ children, userName }) => {
                             borderRight: `1px solid ${colors.white}`,
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: collapsed ? 'center' : 'flex-start',
+                            justifyContent:  'flex-start',
                             gap: 10,
                             flexShrink: 0,
                         }}
@@ -177,12 +179,11 @@ const AuthorizedLayout = ({ children, userName }) => {
                             >
                                 <AppstoreOutlined style={{ fontSize: 20, color: colors.layout.siderText }} />
                             </div>
-                            {!collapsed && (
                                 <div style={{ minWidth: 0 }}>
                                     <div style={{ color: colors.layout.siderText, fontSize: 17, fontWeight: 600, lineHeight: 1.2 }}>MESC</div>
                                     <div style={{ color: colors.layout.siderTextMuted, fontSize: 11, lineHeight: 1.3 }}>Sequenciamento</div>
                                 </div>
-                            )}
+                            
                         </div>
                     </div>
                     <HeaderSearchInput placeholder="Pesquisar OP, codigo, cliente..." {...searchProps} style={{ marginLeft: 24, flexShrink: 0 }} />
@@ -236,23 +237,52 @@ const AuthorizedLayout = ({ children, userName }) => {
             </Header>
 
             <Layout style={{ flex: 1, flexDirection: 'row', minHeight: 0, overflow: 'hidden' }}>
-                <Sider
-                    collapsed={collapsed}
-                    onCollapse={(value) => setCollapsed(value)}
-                    width={230}
-                    style={{
-                        backgroundColor: colors.white,
-                        height: '100%',
-                        willChange: 'width',
-                        transform: 'translateZ(0)',
-                        borderRight: `1px solid ${colors.layout.siderBorder}`,
-                        transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    }}
-                >
-                   
-                    <Divider style={{ margin: 0 }} />
-                    {sidebarMenu}
-                </Sider>
+                <div style={{ position: 'relative', flexShrink: 0, overflow: 'visible' }}>
+                    <Sider
+                        collapsed={collapsed}
+                        onCollapse={(value) => setCollapsed(value)}
+                        width={230}
+                        collapsedWidth={80}
+                        trigger={null}
+                        style={{
+                            backgroundColor: colors.white,
+                            height: '100%',
+                            willChange: 'width',
+                            transform: 'translateZ(0)',
+                            borderRight: `1px solid ${colors.layout.siderBorder}`,
+                            transition: 'width 0.3s cubic-bezier(0.32, 0.72, 0, 1), min-width 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+                        }}
+                    >
+                        <Divider style={{ margin: 0 }} />
+                        {sidebarMenu}
+                    </Sider>
+                    {/* Botão no meio da borda do Sider, para fora */}
+                    <Button
+                        type="primary"
+                        size="small"
+                        icon={collapsed ? <MenuUnfoldOutlined style={{ fontSize: 15 }} /> : <MenuFoldOutlined style={{ fontSize: 15 }} />}
+                        onClick={() => setCollapsed(!collapsed)}
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: -16,
+                            transform: 'translateY(-50%)',
+                            width: 32,
+                            height: 32,
+                            minWidth: 32,
+                            padding: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '50%',
+                            boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+                            border: `1px solid ${colors.borderColor}`,
+                            zIndex: 10,
+                        }}
+                        title={collapsed ? 'Expandir menu' : 'Recolher menu'}
+                        aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+                    />
+                </div>
 
                 <Content style={{ padding: '18px', margin: 0, minHeight: 280, minWidth: 0, overflow: 'auto' }}>
                     <main role="main">{children}</main>
@@ -274,7 +304,9 @@ const AuthorizedLayout = ({ children, userName }) => {
 
 const Authorized = ({ children, userName }) => (
     <FilterSearchProvider>
-        <AuthorizedLayout children={children} userName={userName} />
+        <FilaGanttFilterProvider>
+            <AuthorizedLayout children={children} userName={userName} />
+        </FilaGanttFilterProvider>
     </FilterSearchProvider>
 );
 

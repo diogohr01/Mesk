@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import { Button, DatePicker, InputNumber } from 'antd';
+import { Button, DatePicker, InputNumber, Modal } from 'antd';
 import {
   CloseOutlined,
   CalendarOutlined,
@@ -60,6 +60,7 @@ function DateField({ label, icon: Icon, date, onChange, highlight }) {
 }
 
 function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
+  const [modalConfirmarOpen, setModalConfirmarOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editDataEntrega, setEditDataEntrega] = useState(
     filha.dataEntrega ? dayjs(filha.dataEntrega) : undefined
@@ -224,7 +225,7 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
           Ações Rápidas
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <Button type="primary" size="small" block>
+          <Button type="primary" size="small" block onClick={() => setModalConfirmarOpen(true)}>
             Confirmar OP
           </Button>
           <Button size="small" block>
@@ -235,6 +236,22 @@ function GanttDetailPanel({ filha, pai, onClose, onUpdate }) {
           </Button>
         </div>
       </div>
+      <Modal
+        title="Confirmar OP"
+        open={modalConfirmarOpen}
+        onCancel={() => setModalConfirmarOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setModalConfirmarOpen(false)}>Cancelar</Button>,
+          <Button key="confirm" type="primary" onClick={() => setModalConfirmarOpen(false)}>Confirmar</Button>,
+        ]}
+        width={400}
+      >
+        <p style={{ marginBottom: 16 }}>Sequenciei a semana toda</p>
+        <div style={{ marginBottom: 8 }}>
+          <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Liberar OPs até</label>
+          <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+        </div>
+      </Modal>
     </div>
   );
 }

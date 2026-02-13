@@ -1,11 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Col, Layout, message, Row, Typography } from 'antd';
-import { AppstoreOutlined, HolderOutlined } from '@ant-design/icons';
+import { Button, Col, Form, Layout, message, Modal, Row, Typography } from 'antd';
+import { AppstoreOutlined, EditOutlined, FilterOutlined, HolderOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { Card, ScoreBadge, StyledScroll } from '../../components';
+import { AiOutlineClear, AiOutlineSearch } from 'react-icons/ai';
+import { Card, DynamicForm, ScoreBadge, StyledScroll } from '../../components';
 import OrdemProducaoService from '../../services/ordemProducaoService';
 import { statusLabels } from '../../constants/ordemProducaoStatus';
 import { colors } from '../../styles/colors';
+
+const filterFormConfig = [
+  {
+    columns: 4,
+    questions: [
+      { type: 'text', id: 'numeroOPERP', required: false, placeholder: 'OP ERP...', label: 'OP ERP', size: 'middle' },
+      { type: 'text', id: 'cliente', required: false, placeholder: 'Cliente...', label: 'Cliente', size: 'middle' },
+      { type: 'select', id: 'filtroTipo', required: false, label: 'Tipo', size: 'middle', options: [{ value: 'todos', label: 'Todos' }, { value: 'casa', label: 'Casa' }, { value: 'cliente', label: 'Cliente' }] },
+      { type: 'text', id: 'situacao', required: false, placeholder: 'Situação...', label: 'Situação', size: 'middle' },
+      { type: 'date', id: 'dataOP', required: false, placeholder: 'Data...', label: 'Data', size: 'middle' },
+    ],
+  },
+];
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -26,22 +40,39 @@ const KanbanProducao = () => {
   const [loading, setLoading] = useState(true);
   const [draggedOp, setDraggedOp] = useState(null);
   const [overColumn, setOverColumn] = useState(null);
+  const [modalFiltrosOpen, setModalFiltrosOpen] = useState(false);
+  const [filterForm] = Form.useForm();
 
   const getOPsByStatus = useCallback((status) => ops.filter((op) => op.status === status), [ops]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadKanban = useCallback((filtros = {}) => {
     setLoading(true);
-    OrdemProducaoService.getDadosKanban()
+    const params = { ...filtros };
+    if (params.dataOP && (params.dataOP.toISOString || dayjs.isDayjs(params.dataOP))) {
+      params.dataOP = dayjs(params.dataOP).format('YYYY-MM-DD');
+    }
+    OrdemProducaoService.getDadosKanban(params)
       .then((res) => {
-        if (!cancelled && res.success && res.data && res.data.ops) {
-          setOps(res.data.ops);
-        }
+        if (res.success && res.data && res.data.ops) setOps(res.data.ops);
       })
       .catch(() => message.error('Erro ao carregar o Kanban.'))
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    loadKanban(filterForm.getFieldsValue());
+  }, [loadKanban]);
+
+  const handleFilter = useCallback(() => {
+    loadKanban(filterForm.getFieldsValue());
+    setModalFiltrosOpen(false);
+  }, [filterForm, loadKanban]);
+
+  const handleLimparFiltros = useCallback(() => {
+    filterForm.resetFields();
+    loadKanban({});
+    setModalFiltrosOpen(false);
+  }, [filterForm, loadKanban]);
 
   const handleDragStart = (e, op) => {
     setDraggedOp(op);
@@ -89,6 +120,15 @@ const KanbanProducao = () => {
               title="Kanban de Produção"
               subtitle="Arraste os cards entre colunas para alterar o status"
               icon={<AppstoreOutlined style={{ color: colors.primary }} />}
+              extra={
+                <Button
+                  type="default"
+                  icon={<FilterOutlined />}
+                  onClick={() => setModalFiltrosOpen(true)}
+                >
+                  Filtrar
+                </Button>
+              }
               loading={loading}
             >
               <StyledScroll
@@ -174,6 +214,28 @@ const KanbanProducao = () => {
                 })}
               </StyledScroll>
             </Card>
+            <Modal
+              title="Filtrar"
+              open={modalFiltrosOpen}
+              onCancel={() => setModalFiltrosOpen(false)}
+              footer={null}
+              width={800}
+              destroyOnClose
+            >
+              <DynamicForm
+                formConfig={filterFormConfig}
+                formInstance={filterForm}
+                submitText="Aplicar"
+                submitIcon={<AiOutlineSearch />}
+                onSubmit={handleFilter}
+                onClose={() => setModalFiltrosOpen(false)}
+                secondaryButton={
+                  <Button icon={<AiOutlineClear />} onClick={handleLimparFiltros} size="middle">
+                    Limpar
+                  </Button>
+                }
+              />
+            </Modal>
           </Col>
         </Row>
       </Content>
@@ -218,7 +280,6 @@ function KanbanCard({ op, index, isDragging, onDragStart, onDragEnd }) {
       </Text>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text type="secondary" style={{ fontSize: 9 }}>{op.cliente || '-'}</Text>
-       
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
         <Text type="secondary" style={{ fontSize: 9 }}>Liga {op.liga || '-'}</Text>
@@ -235,6 +296,15 @@ function KanbanCard({ op, index, isDragging, onDragStart, onDragEnd }) {
           {op.dataEntrega ? dayjs(op.dataEntrega).format('DD/MM/YYYY') : '-'}
         </Text>
       </div>
+      <Button
+        type="text"
+        size="small"
+        icon={<EditOutlined />}
+        onClick={(e) => { e.stopPropagation(); }}
+        style={{ alignSelf: 'flex-start', padding: 0, height: 'auto', fontSize: 11 }}
+      >
+        Editar
+      </Button>
     </div>
   );
 }

@@ -386,6 +386,8 @@ const OrdemProducaoService = {
                 const dataEntrega = primeiroItem?.dataEntrega || '';
                 const produto = (pai && pai.produto) || primeiroItem?.descricaoItem || '';
                 const tipo = (f.tipo === 'casa' || (pai && pai.tipo === 'casa')) ? 'casa' : 'cliente';
+                const dataInicio = f.dataInicio || f.dataOP || null;
+                const horaPrevista = f.horaPrevista || '08:00';
                 return {
                     id: f.id,
                     codigo: f.numeroOPERP || '',
@@ -397,6 +399,8 @@ const OrdemProducaoService = {
                     tempera: (pai && pai.tempera) || f.tempera || '',
                     quantidade,
                     dataEntrega,
+                    dataInicio,
+                    horaPrevista,
                     recurso: f.recurso || '',
                     tipo,
                 };
@@ -436,31 +440,57 @@ const OrdemProducaoService = {
         };
     },
 
-    // Kanban: todas as OPs FILHA (exceto cancelada) no formato flat, sem paginação
-    getDadosKanban: async () => {
+    // Kanban: todas as OPs FILHA (exceto cancelada) no formato flat, sem paginação; aceita filtros da tela de OP
+    getDadosKanban: async (filtros = {}) => {
         await delay(300);
         const list = ordensProducaoMock.data || [];
         const pais = list.filter((op) => op.tipoOp === 'PAI');
-        const ops = list
+        let ops = list
             .filter((op) => op.tipoOp === 'FILHA' && op.status !== 'cancelada')
             .map((f) => {
                 const pai = pais.find((p) => p.id === f.opPaiId);
                 const primeiroItem = (f.itens && f.itens[0]) || (pai && pai.itens && pai.itens[0]);
                 const dataEntrega = primeiroItem?.dataEntrega || '';
                 const produto = (pai && pai.produto) || primeiroItem?.descricaoItem || '';
+                const tipo = (f.tipo === 'casa' || (pai && pai.tipo === 'casa')) ? 'casa' : 'cliente';
+                const clienteNome = (f.cliente && f.cliente.nome) || (pai && pai.cliente && pai.cliente.nome) || '';
                 return {
                     id: f.id,
                     codigo: f.numeroOPERP || '',
                     status: f.status || 'rascunho',
                     score: f.score != null ? f.score : 0,
                     produto,
-                    cliente: (f.cliente && f.cliente.nome) || (pai && pai.cliente && pai.cliente.nome) || '',
+                    cliente: clienteNome,
                     liga: (pai && pai.liga) || f.liga || '',
                     tempera: (pai && pai.tempera) || f.tempera || '',
                     dataEntrega,
                     recurso: f.recurso || '',
+                    tipo,
+                    dataOP: f.dataOP,
+                    situacao: f.situacao,
                 };
             });
+        if (filtros.numeroOPERP && String(filtros.numeroOPERP).trim()) {
+            const term = String(filtros.numeroOPERP).trim().toLowerCase();
+            ops = ops.filter((op) => op.codigo?.toLowerCase().includes(term));
+        }
+        if (filtros.cliente && String(filtros.cliente).trim()) {
+            const term = String(filtros.cliente).trim().toLowerCase();
+            ops = ops.filter((op) => op.cliente?.toLowerCase().includes(term));
+        }
+        if (filtros.filtroTipo && filtros.filtroTipo !== 'todos') {
+            ops = ops.filter((op) => op.tipo === filtros.filtroTipo);
+        }
+        if (filtros.situacao && String(filtros.situacao).trim()) {
+            const term = String(filtros.situacao).trim().toLowerCase();
+            ops = ops.filter((op) => op.situacao?.toLowerCase().includes(term) || op.status?.toLowerCase().includes(term));
+        }
+        if (filtros.dataOP) {
+            const dataStr = typeof filtros.dataOP === 'string' ? filtros.dataOP : (filtros.dataOP.toISOString && filtros.dataOP.toISOString().split('T')[0]);
+            if (dataStr) {
+                ops = ops.filter((op) => op.dataOP && String(op.dataOP).split('T')[0] === dataStr);
+            }
+        }
         return {
             data: { ops },
             success: true,
@@ -487,6 +517,7 @@ const OrdemProducaoService = {
                 .filter((f) => f.opPaiId === pai.id)
                 .map((f, idx) => {
                     const dataEntrega = (f.itens && f.itens[0] && f.itens[0].dataEntrega) || '';
+                    const tipo = f.tipo === 'casa' || (pai && pai.tipo === 'casa') ? 'casa' : 'cliente';
                     return {
                         id: String(f.id),
                         codigo: f.numeroOPERP || `${pai.numeroOPERP}-${String(idx + 1).padStart(2, '0')}`,
@@ -499,6 +530,7 @@ const OrdemProducaoService = {
                         score: f.score != null ? f.score : 0,
                         setupMinutos: f.setupMinutos != null ? f.setupMinutos : 0,
                         setupTipo: f.setupTipo || '',
+                        tipo,
                     };
                 });
             return {

@@ -1,6 +1,21 @@
 import { Button, message, Space, Table } from 'antd';
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { LoadingSpinner } from '../UI';
+
+const DROPPABLE_ID = 'paginated-table-body';
+
+const DRAG_ROW_STYLES = {
+    cursor: 'grab',
+    transition: 'box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+};
+const DRAG_ROW_DRAGGING_STYLES = {
+    boxShadow: '0 12px 28px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.08)',
+    zIndex: 9999,
+    backgroundColor: '#ffffff',
+    cursor: 'grabbing',
+    transition: 'box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0, 0, 1)',
+};
 
 /**
  * Componente de Tabela Paginada Personalizada
@@ -8,6 +23,8 @@ import { LoadingSpinner } from '../UI';
  * @param {function} fetchData - Função assíncrona para buscar dados do backend. Recebe (page, pageSize, sorterField, sortOrder).
  * @param {number} initialPageSize - Define o tamanho inicial da página. Default: 5.
  * @param {boolean} disabled - Desativa a tabela e suas interações. Default: false.
+ * @param {boolean} reorderable - Se true, as linhas ficam arrastáveis para reordenar a página atual. Default: false.
+ * @param {function} onReorder - Callback (orderedData) => void chamado após reordenar. Opcional.
  * @param {array} columns - Array de colunas da tabela no formato [{ title: 'Nome', dataIndex: 'nome', key: 'nome' }].
  * @param {array} actions - Array de objetos para botões de ação na tabela. Exemplo: [{ label: 'Editar', onClick: (record) => {} }].
  * @param {string} rowKey - Chave única para cada linha. Default: 'id'.
@@ -23,6 +40,8 @@ const PaginatedTable = forwardRef(
             fetchData,
             initialPageSize = 5,
             disabled = false,
+            reorderable = false,
+            onReorder,
             columns,
             actions = [],
             rowKey = 'id',
@@ -86,6 +105,87 @@ const PaginatedTable = forwardRef(
             },
         }));
 
+        const handleDragEnd = useCallback(
+            (result) => {
+                if (!result.destination) return;
+                const from = result.source.index;
+                const to = result.destination.index;
+                if (from === to) return;
+                setData((prev) => {
+                    const next = [...prev];
+                    const [removed] = next.splice(from, 1);
+                    next.splice(to, 0, removed);
+                    onReorder?.(next);
+                    return next;
+                });
+            },
+            [onReorder]
+        );
+
+        const DroppableBodyWrapper = useMemo(
+            () =>
+                function DroppableBodyWrapper({ children, ...rest }) {
+                    return (
+                        <Droppable droppableId={DROPPABLE_ID}>
+                            {(provided) => (
+                                <tbody ref={provided.innerRef} {...provided.droppableProps} {...rest}>
+                                    {children}
+                                    {provided.placeholder}
+                                </tbody>
+                            )}
+                        </Droppable>
+                    );
+                },
+            []
+        );
+
+        const DraggableBodyRow = useCallback(
+            (props) => {
+                const { record, index, children, 'data-row-key': dataRowKey, style: rowStyle, ...rest } = props;
+                const key = record?.[rowKey] ?? dataRowKey ?? index ?? 0;
+                const safeIndex = typeof index === 'number' ? index : 0;
+                return (
+                    <Draggable draggableId={String(key)} index={safeIndex}>
+                        {(provided, snapshot) => {
+                            const dragStyle = snapshot.isDragging
+                                ? {
+                                      ...provided.draggableProps.style,
+                                      ...DRAG_ROW_DRAGGING_STYLES,
+                                  }
+                                : {
+                                      ...rowStyle,
+                                      ...provided.draggableProps.style,
+                                      ...DRAG_ROW_STYLES,
+                                  };
+                            return (
+                                <tr
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    {...rest}
+                                    style={dragStyle}
+                                    data-row-key={dataRowKey}
+                                    data-dragging={snapshot.isDragging ? 'true' : undefined}
+                                >
+                                    {children}
+                                </tr>
+                            );
+                        }}
+                    </Draggable>
+                );
+            },
+            [rowKey]
+        );
+
+        const tableComponents = reorderable
+            ? {
+                  body: {
+                      wrapper: DroppableBodyWrapper,
+                      row: DraggableBodyRow,
+                  },
+              }
+            : undefined;
+
         useEffect(() => {
             getData(pagination.current, pagination.pageSize, sorter?.field, sorter?.order);
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,8 +226,17 @@ const PaginatedTable = forwardRef(
             sortOrder: sorter.field === column.dataIndex ? sorter.order : null, // Define a ordenação atual com base no estado
         })).concat(actionColumn);
 
-        return (
+        const mergedOnRow = reorderable
+            ? (record, index) => ({
+                  record,
+                  index,
+                  ...(restProps.onRow?.(record, index) || {}),
+              })
+            : restProps.onRow;
+
+        const table = (
             <Table
+                {...restProps}
                 dataSource={data}
                 columns={combinedColumns}
                 pagination={{
@@ -141,6 +250,8 @@ const PaginatedTable = forwardRef(
                 onChange={handleTableChange} // Função chamada ao mudar página, ordenação, etc.
                 rowKey={rowKey} // Usar rowKey configurável
                 scroll={scroll} // Adiciona scroll horizontal para evitar layout quebrado com muitas colunas
+                components={tableComponents}
+                onRow={reorderable ? mergedOnRow : restProps.onRow}
                 rowSelection={
                     rowSelection
                         ? {
@@ -151,9 +262,13 @@ const PaginatedTable = forwardRef(
                         : null
                 }
                 expandable={expandable} // Suporte para linhas expansíveis
-                {...restProps} // Permite passar outras propriedades para a tabela
             />
         );
+
+        if (reorderable) {
+            return <DragDropContext onDragEnd={handleDragEnd}>{table}</DragDropContext>;
+        }
+        return table;
     }
 );
 

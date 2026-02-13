@@ -1,0 +1,7 @@
+{
+  "data": [
+    { "id": 1, "codigo": "FERIADO", "descricao": "Feriado" },
+    { "id": 2, "codigo": "MANUTENCAO", "descricao": "Manutenção" },
+    { "id": 3, "codigo": "OUTRO", "descricao": "Outro" }
+  ]
+}

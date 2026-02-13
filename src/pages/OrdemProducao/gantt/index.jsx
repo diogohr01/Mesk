@@ -1,32 +1,36 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Button, Select, Slider, Space, Typography } from 'antd';
+import { Button, Dropdown, message, Select, Space, Typography } from 'antd';
 import {
   ClockCircleOutlined,
   CalendarOutlined,
   CalendarFilled,
   FullscreenOutlined,
   FullscreenExitOutlined,
-  ZoomInOutlined,
-  ZoomOutOutlined,
   ToolOutlined,
   WarningOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
   FilterOutlined,
+  UnorderedListOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { Layout } from 'antd';
 
 const { Content } = Layout;
 import OrdemProducaoService from '../../../services/ordemProducaoService';
+import SequenciamentoService from '../../../services/sequenciamentoService';
 import { statusLabels } from '../../../constants/ordemProducaoStatus';
 import { StyledScroll } from '../../../components';
 import GanttChart from './components/GanttChart';
 import GanttLegend from './components/GanttLegend';
 import GanttDetailPanel from './components/GanttDetailPanel';
+import GanttZoomPresets from './components/GanttZoomPresets';
+import ModalSequenciarOP from '../../FilaProducao/Modals/ModalSequenciarOP';
 import { useGanttTime } from '../../../hooks/useGanttTime';
 import { toast } from '../../../helpers/toast';
+import { useFilaGanttFilterContext } from '../../../contexts/FilaGanttFilterContext';
 import { colors } from '../../../styles/colors';
 
 const zoomOptions = [
@@ -47,14 +51,6 @@ const SCALE_MIN = 0.1;
 const SCALE_MAX = 6;
 const SCALE_STEP = 0.2;
 
-const zoomPresets = [
-  { label: '25%', value: 0.25 },
-  { label: '50%', value: 0.5 },
-  { label: '100%', value: 1 },
-  { label: '200%', value: 2 },
-  { label: '400%', value: 4 },
-];
-
 const statuses = [
   'todos',
   'rascunho',
@@ -66,6 +62,8 @@ const statuses = [
 ];
 
 const GanttProducao = () => {
+  const { cenarioId: cenarioAtivoId, setCenarioId: setCenarioAtivo, filtroTipo, setFiltroTipo } = useFilaGanttFilterContext();
+  const filtroTipoContext = filtroTipo;
   const [zoom, setZoom] = useState('dia');
   const [showSetups, setShowSetups] = useState(true);
   const [showExcecoes, setShowExcecoes] = useState(true);
@@ -79,7 +77,21 @@ const GanttProducao = () => {
   const [manutencoes, setManutencoes] = useState([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
+  const [modalSequenciarOpen, setModalSequenciarOpen] = useState(false);
+  const [cenarios, setCenarios] = useState([]);
+  const [casaPct, setCasaPct] = useState(70);
   const ganttAreaRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+    SequenciamentoService.getAll({ page: 1, pageSize: 100 })
+      .then((res) => {
+        if (!cancelled && res.success && res.data?.data) setCenarios(res.data.data);
+      })
+      .catch(() => { if (!cancelled) message.error('Erro ao carregar cenários.'); });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     setLoadingBars(true);
@@ -146,6 +158,7 @@ const GanttProducao = () => {
     return opsData.flatMap((op) =>
       op.filhas
         .filter((f) => {
+          if (filtroTipoContext && filtroTipoContext !== 'todos' && f.tipo !== filtroTipoContext) return false;
           if (onlyConfirmadas && f.status !== 'confirmada' && f.status !== 'em_producao')
             return false;
           if (statusFilter !== 'todos' && f.status !== statusFilter) return false;
@@ -157,7 +170,7 @@ const GanttProducao = () => {
         })
         .map((f) => ({ filha: f, pai: op }))
     );
-  }, [opsData, onlyConfirmadas, statusFilter, recursoFilter]);
+  }, [opsData, onlyConfirmadas, statusFilter, recursoFilter, filtroTipoContext]);
 
   const selectedData = useMemo(() => {
     if (!selectedOP) return null;
@@ -286,20 +299,15 @@ const GanttProducao = () => {
               )}
             </div>
             <Space size="middle" wrap>
-            
-              <Space size={8}>
-                {zoomPresets.map((p) => (
-                  <Button
-                    key={p.value}
-                    type={Math.abs(zoomScale - p.value) < 0.05 ? 'primary' : 'default'}
-                    size="middle"
-                    onClick={() => setZoomScale(p.value)}
-                    style={{ fontSize: 12, fontFamily: 'monospace', padding: '4px 10px' }}
-                  >
-                    {p.label}
-                  </Button>
-                ))}
-              </Space>
+              <GanttZoomPresets zoomScale={zoomScale} onZoomScaleChange={setZoomScale} />
+              <Button
+                size="middle"
+                icon={<UnorderedListOutlined style={{ fontSize: 15 }} />}
+                onClick={() => setModalSequenciarOpen(true)}
+                style={{ padding: '4px 12px' }}
+              >
+                Sequenciar OP
+              </Button>
               <Button
                 size="middle"
                 icon={isFullscreen ? <FullscreenExitOutlined style={{ fontSize: 15 }} /> : <FullscreenOutlined style={{ fontSize: 15 }} />}
@@ -338,15 +346,32 @@ const GanttProducao = () => {
             >
               Setups
             </Button>
-            <Button
-              size="middle"
-              type={showExcecoes ? 'default' : 'text'}
-              icon={<WarningOutlined style={{ fontSize: 15 }} />}
-              onClick={() => setShowExcecoes(!showExcecoes)}
-              style={{ padding: '4px 14px', fontSize: 12 }}
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: 'toggle',
+                    label: showExcecoes ? 'Ocultar exceções no Gantt' : 'Mostrar exceções no Gantt',
+                    onClick: () => setShowExcecoes(!showExcecoes),
+                  },
+                  {
+                    key: 'cadastro',
+                    label: 'Cadastro de Exceções',
+                    onClick: () => navigate('/cadastros/excecoes'),
+                  },
+                ],
+              }}
+              trigger={['click']}
             >
-              Exceções
-            </Button>
+              <Button
+                size="middle"
+                type={showExcecoes ? 'default' : 'text'}
+                icon={<WarningOutlined style={{ fontSize: 15 }} />}
+                style={{ padding: '4px 14px', fontSize: 12 }}
+              >
+                Exceções
+              </Button>
+            </Dropdown>
             <Button
               size="middle"
               type={onlyConfirmadas ? 'primary' : 'default'}
@@ -433,6 +458,18 @@ const GanttProducao = () => {
             <GanttLegend />
           </div>
         </div>
+
+        <ModalSequenciarOP
+          open={modalSequenciarOpen}
+          onClose={() => setModalSequenciarOpen(false)}
+          cenarios={cenarios}
+          cenarioAtivoId={cenarioAtivoId}
+          setCenarioAtivo={setCenarioAtivo}
+          filtroTipo={filtroTipo}
+          setFiltroTipo={setFiltroTipo}
+          casaPct={casaPct}
+          setCasaPct={setCasaPct}
+        />
       </Content>
     </Layout>
   );

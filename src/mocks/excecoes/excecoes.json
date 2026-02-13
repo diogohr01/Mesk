@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "dataInicio": "2026-03-01T00:00:00.000Z",
+      "dataFim": "2026-03-01T23:59:59.000Z",
+      "tipoId": 1,
+      "descricao": "Carnaval",
+      "recursoIds": []
+    },
+    {
+      "id": 2,
+      "dataInicio": "2026-02-20T08:00:00.000Z",
+      "dataFim": "2026-02-21T18:00:00.000Z",
+      "tipoId": 2,
+      "descricao": "Manutenção preventiva Prensa 03",
+      "recursoIds": ["rec-3"]
+    }
+  ]
+}
